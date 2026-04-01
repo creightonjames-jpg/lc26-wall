@@ -246,6 +246,9 @@ function AgendaTab({dm}) {
   const [day, setDay] = useState(null);
   const rxRaw = useFirebase("reactions");
   const rx = rxRaw || {};
+  const [reacted, setReacted] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("lc26_reacted") || "{}"); } catch { return {}; }
+  });
 
   useEffect(() => { const iv = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(iv); }, []);
   useEffect(() => {
@@ -257,9 +260,17 @@ function AgendaTab({dm}) {
 
   const dd = AGENDA.find(d => d.day===day) || AGENDA[0];
 
+  const hasReacted = (ek, em) => !!(reacted[ek] && reacted[ek][em]);
+
   const react = (ek, em) => {
+    if (hasReacted(ek, em)) return;
     const cur = (rx[ek] && rx[ek][em]) || 0;
     fbUpdate(`reactions/${ek}`, { [em]: cur + 1 });
+    const nr = { ...reacted };
+    if (!nr[ek]) nr[ek] = {};
+    nr[ek][em] = true;
+    setReacted(nr);
+    try { localStorage.setItem("lc26_reacted", JSON.stringify(nr)); } catch {}
   };
 
   let cur=null, nxt=null;
@@ -329,7 +340,8 @@ function AgendaTab({dm}) {
                 <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
                   {EJ.map(em => {
                     const cnt = (rx[ek] && rx[ek][em]) || 0;
-                    return <button key={em} onClick={() => react(ek,em)} className={`emoji-btn ${cnt>0?"has":""}`}>{em}{cnt>0 && <span style={{fontSize:17,fontWeight:600,color:"var(--gold)"}}>{cnt}</span>}</button>;
+                    const did = hasReacted(ek, em);
+                    return <button key={em} onClick={() => react(ek,em)} className={`emoji-btn ${cnt>0?"has":""}`} style={did?{background:"var(--glow)",borderColor:"var(--goldDim)",cursor:"default",opacity:.85}:{}}>{em}{cnt>0 && <span style={{fontSize:17,fontWeight:600,color:"var(--gold)"}}>{cnt}</span>}</button>;
                   })}
                 </div>
               </div>
@@ -542,6 +554,9 @@ function PoTab({dm, admin}) {
   const raw = useFirebase("polls");
   const polls = toArr(raw);
   const [q, setQ] = useState(""); const [opts, setOpts] = useState(["","",""]);
+  const [pollVotes, setPollVotes] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("lc26_pollvotes") || "{}"); } catch { return {}; }
+  });
 
   const create = () => {
     const valid = opts.filter(o => o.trim());
@@ -551,9 +566,15 @@ function PoTab({dm, admin}) {
   };
   const toggle = (key, cur) => fbUpdate(`polls/${key}`, { on: !cur });
   const vote = (key, opts, oi) => {
+    if (pollVotes[key] !== undefined) return;
     const no = [...opts]; no[oi] = {...no[oi], v: no[oi].v + 1};
     fbUpdate(`polls/${key}`, { opts: no });
+    const nv = { ...pollVotes, [key]: oi };
+    setPollVotes(nv);
+    try { localStorage.setItem("lc26_pollvotes", JSON.stringify(nv)); } catch {}
   };
+  const hasVotedPoll = key => pollVotes[key] !== undefined;
+  const votedOption = key => pollVotes[key];
 
   const act = polls.filter(p=>p.on), cls = polls.filter(p=>!p.on);
 
@@ -573,23 +594,32 @@ function PoTab({dm, admin}) {
       {polls.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No polls yet</p>}
       {[...act,...cls].map(p => {
         const total = p.opts.reduce((s,o) => s+o.v, 0);
+        const voted = hasVotedPoll(p._key);
+        const myChoice = votedOption(p._key);
         return (
           <div key={p._key} style={{padding:20,borderBottom:"1px solid var(--border)",opacity:p.on?1:.5}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6}}>
               <div style={{fontSize:dm?22:18,fontFamily:"var(--ff)",fontWeight:700}}>{p.q}</div>
               <div style={{display:"flex",gap:4,alignItems:"center"}}>
-                {p.on && <span style={{fontSize:12,padding:"1px 5px",borderRadius:6,background:"var(--red)",color:"#fff",fontWeight:700}}>LIVE</span>}
+                {p.on && !voted && <span style={{fontSize:12,padding:"1px 5px",borderRadius:6,background:"var(--red)",color:"#fff",fontWeight:700}}>LIVE</span>}
+                {voted && <span style={{fontSize:13,padding:"2px 8px",borderRadius:6,background:"var(--glow)",border:"1px solid var(--goldDim)",color:"var(--gold)",fontWeight:600}}>✅ Voted</span>}
                 {admin && <button onClick={() => toggle(p._key, p.on)} className="btn-sm">{p.on?"Close":"Open"}</button>}
               </div>
             </div>
             <div style={{marginTop:8,display:"flex",flexDirection:"column",gap:4}}>
               {p.opts.map((o,i) => {
                 const pct = total>0 ? Math.round(o.v/total*100) : 0;
+                const isMyChoice = voted && myChoice === i;
                 return (
-                  <button key={i} onClick={() => p.on && vote(p._key, p.opts, i)} disabled={!p.on}
-                    style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",background:"var(--input)",border:"1px solid var(--border)",borderRadius:8,cursor:p.on?"pointer":"default",position:"relative",overflow:"hidden",textAlign:"left"}}>
-                    <div style={{position:"absolute",left:0,top:0,bottom:0,width:`${pct}%`,background:"var(--glow)",transition:"width .5s",borderRadius:8}} />
-                    <span style={{position:"relative",flex:1,fontSize:16,fontWeight:500,color:"var(--txt)"}}>{o.t}</span>
+                  <button key={i} onClick={() => p.on && !voted && vote(p._key, p.opts, i)} disabled={!p.on || voted}
+                    style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",
+                      background:isMyChoice?"rgba(201,165,78,0.12)":"var(--input)",
+                      border:isMyChoice?"1px solid var(--goldDim)":"1px solid var(--border)",
+                      borderRadius:8,cursor:(!p.on||voted)?"default":"pointer",
+                      position:"relative",overflow:"hidden",textAlign:"left",
+                      transition:"all .3s"}}>
+                    <div style={{position:"absolute",left:0,top:0,bottom:0,width:`${pct}%`,background:isMyChoice?"rgba(201,165,78,0.2)":"var(--glow)",transition:"width .5s",borderRadius:8}} />
+                    <span style={{position:"relative",flex:1,fontSize:16,fontWeight:isMyChoice?600:500,color:isMyChoice?"var(--gold)":"var(--txt)"}}>{isMyChoice && "✓ "}{o.t}</span>
                     <span style={{position:"relative",fontSize:19,color:"var(--gold)",fontWeight:700}}>{pct}%</span>
                     <span style={{position:"relative",fontSize:17,color:"var(--mute)"}}>{o.v}</span>
                   </button>
