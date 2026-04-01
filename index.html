@@ -347,13 +347,23 @@ function QTab({dm}) {
   const items = toArr(raw);
   const [sort, setSort] = useState("votes");
   const [txt, setTxt] = useState(""); const [nm, setNm] = useState("");
+  const [voted, setVoted] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("lc26_voted") || "{}"); } catch { return {}; }
+  });
 
   const sub = () => {
     if (!txt.trim()) return;
     fbPush("questions", { text: txt.trim(), name: nm.trim()||"Anonymous", ts: Date.now(), votes: 0 });
     setTxt("");
   };
-  const up = (key, cur) => fbUpdate(`questions/${key}`, { votes: (cur||0) + 1 });
+  const up = (key, cur) => {
+    if (voted[key]) return;
+    fbUpdate(`questions/${key}`, { votes: (cur||0) + 1 });
+    const nv = { ...voted, [key]: true };
+    setVoted(nv);
+    try { localStorage.setItem("lc26_voted", JSON.stringify(nv)); } catch {}
+  };
+  const hasVoted = key => !!voted[key];
 
   const sorted = [...items].sort((a,b) => sort==="votes" ? (b.votes||0)-(a.votes||0) : b.ts-a.ts);
 
@@ -375,20 +385,30 @@ function QTab({dm}) {
       </div>
       <div style={{maxHeight:dm?"calc(100vh - 260px)":360,overflowY:"auto"}}>
         {sorted.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No questions yet — be the first!</p>}
-        {sorted.map(it => (
-          <div key={it._key} className="card-hover" style={{padding:"14px 20px",borderBottom:"1px solid var(--border)",display:"flex",gap:10}}>
-            <button onClick={() => up(it._key, it.votes)} style={{display:"flex",flexDirection:"column",alignItems:"center",background:"none",border:"1px solid var(--border)",borderRadius:7,padding:"5px 7px",color:"var(--dim)",minWidth:38,cursor:"pointer",transition:"all .2s"}}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.color="var(--gold)";}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.color="var(--dim)";}}>
-              <span style={{fontSize:14}}>👍</span>
-              <span style={{fontSize:19,fontWeight:600}}>{it.votes||0}</span>
-            </button>
-            <div style={{flex:1}}>
-              <p style={{color:"var(--txt)",fontSize:dm?22:18,lineHeight:1.5}}>{it.text}</p>
-              <div style={{marginTop:3,fontSize:18,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
+        {sorted.map(it => {
+          const v = hasVoted(it._key);
+          return (
+            <div key={it._key} className="card-hover" style={{padding:"14px 20px",borderBottom:"1px solid var(--border)",display:"flex",gap:10}}>
+              <button onClick={() => up(it._key, it.votes)}
+                style={{display:"flex",flexDirection:"column",alignItems:"center",
+                  background:v?"var(--glow)":"none",
+                  border:v?"1px solid var(--gold)":"1px solid var(--border)",
+                  borderRadius:7,padding:"5px 7px",
+                  color:v?"var(--gold)":"var(--dim)",
+                  minWidth:38,cursor:v?"default":"pointer",
+                  transition:"all .2s",opacity:v?.8:1}}
+                onMouseEnter={e=>{if(!v){e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.color="var(--gold)";}}}
+                onMouseLeave={e=>{if(!v){e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.color="var(--dim)";}}}>
+                <span style={{fontSize:14}}>{v ? "✅" : "👍"}</span>
+                <span style={{fontSize:19,fontWeight:600}}>{it.votes||0}</span>
+              </button>
+              <div style={{flex:1}}>
+                <p style={{color:"var(--txt)",fontSize:dm?22:18,lineHeight:1.5}}>{it.text}</p>
+                <div style={{marginTop:3,fontSize:18,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
