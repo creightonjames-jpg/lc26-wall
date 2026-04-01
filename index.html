@@ -128,7 +128,7 @@ function toArr(obj) {
 const ADMIN_PIN = "2026";
 const CONF_START = new Date("2026-04-27T18:00:00-05:00");
 const EJ = ["🔥", "👏", "💡", "🎯"];
-const QR_URL = "https://7levelsblog.com/lc26-wall"; // ← UPDATE to your final page URL
+const QR_URL = "https://creightonjames-jpg.github.io/lc26-wall/";
 
 const AGENDA = [
   { day:1, date:"2026-04-27", label:"Mon, Apr 27", title:"Arrival & Welcome", loc:"The Nelson Sports Club",
@@ -431,7 +431,7 @@ function CTab({dm}) {
 }
 
 // ─── PHOTOS TAB ───
-function PTab({dm}) {
+function PTab({dm, admin}) {
   const raw = useFirebase("photos");
   const photos = toArr(raw).sort((a,b) => b.ts - a.ts);
   const [uploading, setUploading] = useState(false);
@@ -447,6 +447,22 @@ function PTab({dm}) {
       setCap(""); fr.current.value = "";
     } catch(err) { console.error(err); }
     setUploading(false);
+  };
+
+  const deletePhoto = (key) => {
+    if (window.confirm("Delete this photo?")) {
+      fbRemove(`photos/${key}`);
+      setVp(null);
+    }
+  };
+
+  const downloadPhoto = (photo) => {
+    const link = document.createElement("a");
+    link.href = photo.data;
+    link.download = `lc26-photo-${photo.name.replace(/\s+/g,"-")}-${new Date(photo.ts).toISOString().slice(0,10)}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -479,9 +495,21 @@ function PTab({dm}) {
       {vp && (
         <div className="overlay" onClick={() => setVp(null)}>
           <div onClick={e=>e.stopPropagation()} style={{maxWidth:"90vw",textAlign:"center"}}>
-            <img src={vp.data} alt="" style={{maxWidth:"100%",maxHeight:"78vh",borderRadius:12}} />
-            <div style={{marginTop:8,color:"var(--txt)"}}>{vp.caption && <p>{vp.caption}</p>}<p style={{fontSize:16,color:"var(--dim)",margin:"2px 0 0"}}>{vp.name} · {ago(vp.ts)}</p></div>
-            <button onClick={() => setVp(null)} className="btn-gold" style={{marginTop:10}}>Close</button>
+            <img src={vp.data} alt="" style={{maxWidth:"100%",maxHeight:"70vh",borderRadius:12}} />
+            <div style={{marginTop:8,color:"var(--txt)"}}>{vp.caption && <p style={{fontSize:18}}>{vp.caption}</p>}<p style={{fontSize:15,color:"var(--dim)",margin:"4px 0 0"}}>{vp.name} · {ago(vp.ts)}</p></div>
+            <div style={{marginTop:14,display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+              <button onClick={() => setVp(null)} className="btn-gold">Close</button>
+              {admin && (
+                <>
+                  <button onClick={() => downloadPhoto(vp)} className="btn-sm" style={{padding:"10px 20px",fontSize:15,borderColor:"var(--gold)",color:"var(--gold)"}}>
+                    ⬇ Download
+                  </button>
+                  <button onClick={() => deletePhoto(vp._key)} className="btn-sm" style={{padding:"10px 20px",fontSize:15,borderColor:"var(--red)",color:"var(--red)"}}>
+                    🗑 Delete
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -781,7 +809,7 @@ function App() {
           {tab==="agenda" && <AgendaTab dm={dm} />}
           {tab==="questions" && <QTab dm={dm} />}
           {tab==="comments" && <CTab dm={dm} />}
-          {tab==="photos" && <PTab dm={dm} />}
+          {tab==="photos" && <PTab dm={dm} admin={admin} />}
           {tab==="polls" && <PoTab dm={dm} admin={admin} />}
           {tab==="takeaways" && <TkTab dm={dm} />}
         </>)}
