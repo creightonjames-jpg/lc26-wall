@@ -732,30 +732,103 @@ function ExportTab({dm}) {
 // ─── ADMIN MODAL ───
 function AdminModal({onClose}) {
   const [txt, setTxt] = useState("");
+  const [confirmReset, setConfirmReset] = useState(false);
   const raw = useFirebase("announcements");
   const anns = toArr(raw).filter(a => a.on);
 
   const post = () => { if(!txt.trim())return; fbPush("announcements",{text:txt.trim(),on:true,ts:Date.now()}); setTxt(""); };
   const dismiss = key => fbUpdate(`announcements/${key}`, {on:false});
 
+  const resetSection = (path, label) => {
+    if (window.confirm(`Delete all ${label}? This cannot be undone.`)) {
+      fbRemove(path);
+    }
+  };
+
+  const resetAll = () => {
+    if (window.confirm("⚠️ RESET EVERYTHING?\n\nThis will delete ALL questions, shoutouts, photos, polls, takeaways, reactions, and announcements.\n\nThis cannot be undone.")) {
+      fbRemove("questions");
+      fbRemove("comments");
+      fbRemove("photos");
+      fbRemove("polls");
+      fbRemove("reactions");
+      fbRemove("takeaways");
+      fbRemove("announcements");
+      // Clear localStorage voting history too
+      try {
+        localStorage.removeItem("lc26_voted");
+        localStorage.removeItem("lc26_reacted");
+        localStorage.removeItem("lc26_pollvotes");
+      } catch {}
+      setConfirmReset(false);
+      alert("All data has been reset.");
+    }
+  };
+
+  const resetLocal = () => {
+    try {
+      localStorage.removeItem("lc26_voted");
+      localStorage.removeItem("lc26_reacted");
+      localStorage.removeItem("lc26_pollvotes");
+    } catch {}
+    alert("Your local vote history has been cleared. Refresh the page to see the effect.");
+  };
+
   return (
     <div className="overlay" onClick={onClose}>
-      <div className="modal" onClick={e=>e.stopPropagation()}>
-        <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
+      <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:520}}>
+        <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
           <h2 style={{fontFamily:"var(--ff)",fontSize:22,color:"var(--gold)",fontWeight:700}}>⚙️ Admin</h2>
-          <button onClick={onClose} style={{background:"none",border:"none",color:"var(--dim)",fontSize:17,cursor:"pointer"}}>✕</button>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"var(--dim)",fontSize:20,cursor:"pointer"}}>✕</button>
         </div>
-        <div style={{fontSize:17,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Post Announcement</div>
+
+        {/* Announcements */}
+        <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Post Announcement</div>
         <div style={{display:"flex",gap:6}}>
           <input value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Type announcement..." className="field" onKeyDown={e=>{if(e.key==="Enter")post();}} />
-          <button onClick={post} className="btn-gold" style={{fontSize:12}}>Send</button>
+          <button onClick={post} className="btn-gold" style={{fontSize:14}}>Send</button>
         </div>
         {anns.map(a => (
-          <div key={a._key} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 8px",background:"var(--input)",borderRadius:5,marginTop:6}}>
-            <span style={{fontSize:12}}>{a.text}</span>
+          <div key={a._key} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",background:"var(--input)",borderRadius:6,marginTop:6}}>
+            <span style={{fontSize:14}}>{a.text}</span>
             <button onClick={() => dismiss(a._key)} className="btn-sm">Dismiss</button>
           </div>
         ))}
+
+        {/* Divider */}
+        <div style={{borderTop:"1px solid var(--border)",margin:"20px 0"}} />
+
+        {/* Reset by section */}
+        <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Reset Data by Section</div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
+          {[
+            {path:"questions",label:"Questions"},
+            {path:"comments",label:"Shoutouts"},
+            {path:"photos",label:"Photos"},
+            {path:"polls",label:"Polls"},
+            {path:"reactions",label:"Reactions"},
+            {path:"takeaways",label:"Takeaways"},
+            {path:"announcements",label:"Announcements"},
+          ].map(s => (
+            <button key={s.path} onClick={() => resetSection(s.path, s.label)} className="btn-sm" style={{color:"var(--red)",borderColor:"var(--red)",padding:"6px 12px",fontSize:13}}>
+              🗑 {s.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Reset local votes */}
+        <button onClick={resetLocal} className="btn-sm" style={{padding:"8px 16px",fontSize:13,marginBottom:12,borderColor:"var(--goldDim)",color:"var(--goldDim)",width:"100%"}}>
+          🔄 Clear My Vote History (this device only)
+        </button>
+
+        {/* Nuclear reset */}
+        <div style={{borderTop:"1px solid var(--border)",margin:"12px 0"}} />
+        <button onClick={resetAll} style={{width:"100%",padding:"12px 20px",background:"none",border:"2px solid var(--red)",borderRadius:10,color:"var(--red)",fontSize:16,fontFamily:"var(--ff)",fontWeight:700,cursor:"pointer",transition:"all .2s"}}
+          onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,107,74,0.1)";}}
+          onMouseLeave={e=>{e.currentTarget.style.background="none";}}>
+          ⚠️ Reset ALL Data
+        </button>
+        <p style={{fontSize:12,color:"var(--mute)",textAlign:"center",marginTop:6}}>Deletes everything and clears your local vote history</p>
       </div>
     </div>
   );
