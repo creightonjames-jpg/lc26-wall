@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LC26 Live Wall — Century Golf Partners</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+/* WordPress theme overrides — kill all chrome */
+html,body,.site,.site-content,.entry-content,.post-content,.page-content,
+.wp-site-blocks,.wp-block-post-content,.has-global-padding,
+article,main,.site-main,#main,#content,#primary,
+.entry-header,.page-header{
+  margin:0!important;padding:0!important;max-width:none!important;width:100%!important;
+}
+header.site-header,.site-header,#masthead,.wp-block-template-part:first-child,
+footer.site-footer,.site-footer,#colophon,.wp-block-template-part:last-child,
+nav,.main-navigation,.site-branding,.site-info,
+.entry-title,.page-title,.post-title{
+  display:none!important;
+}
+body{overflow-x:hidden}
+:root{
+  --bg:#0C1A0F;--card:#142018;--input:#1A2B20;
+  --gold:#C9A54E;--goldDim:#8B7234;--glow:rgba(201,165,78,0.15);
+  --txt:#E8E0D4;--dim:#8A9B8E;--mute:#5A6B5E;
+  --border:#2A3D2E;--bLight:#3A5040;
+  --red:#FF6B4A;--white:#FFF;
+  --ff:'Playfair Display',Georgia,serif;
+  --fs:'Source Sans 3','Segoe UI',sans-serif;
+}
+html,body,#root{min-height:100vh;background:var(--bg);color:var(--txt);font-family:var(--fs)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+button{font-family:var(--fs);cursor:pointer}
+input,textarea{font-family:var(--fs)}
+.tab-btn{padding:9px 13px;background:none;border:none;font-family:var(--ff);font-size:12px;font-weight:400;white-space:nowrap;border-bottom:3px solid transparent;transition:all .3s;color:var(--dim)}
+.tab-btn.active{color:var(--gold);font-weight:700;border-bottom-color:var(--gold)}
+.tab-count{margin-left:4px;padding:1px 6px;border-radius:9px;font-size:9px;font-family:var(--fs);font-weight:600}
+.field{padding:9px;background:var(--input);border:1px solid var(--border);border-radius:7px;color:var(--txt);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.field:focus{border-color:var(--gold)}
+.btn-gold{padding:9px 18px;background:linear-gradient(135deg,var(--gold),var(--goldDim));color:var(--bg);border:none;border-radius:7px;font-family:var(--ff);font-weight:700;font-size:13px;white-space:nowrap;box-shadow:0 4px 16px var(--glow);transition:transform .2s}
+.btn-gold:hover{transform:translateY(-1px)}
+.btn-sm{padding:3px 8px;background:none;border:1px solid var(--border);border-radius:5px;color:var(--dim);font-size:10px;transition:all .2s}
+.btn-sm:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm.active{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:600}
+.pill{padding:3px 10px;border-radius:12px;border:1px solid var(--border);font-size:10px;font-weight:500;cursor:pointer;transition:all .2s;background:transparent;color:var(--dim)}
+.pill.active{background:var(--glow);border-color:var(--goldDim);color:var(--gold)}
+.emoji-btn{padding:2px 6px;border-radius:10px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:2px;color:var(--dim);transition:all .15s}
+.emoji-btn:hover{border-color:var(--gold)}
+.emoji-btn.has{background:var(--glow)}
+.card-hover{transition:background .2s}
+.card-hover:hover{background:var(--glow)}
+.overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:440px;width:100%;max-height:75vh;overflow-y:auto}
+.dm .tab-btn{font-size:16px;padding:14px 20px}
+.dm .field{font-size:16px;padding:14px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ─── FIREBASE ───
+firebase.initializeApp({
+  databaseURL: "https://lc26-wall-default-rtdb.firebaseio.com"
+});
+const db = firebase.database();
+
+function useFirebase(path) {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const ref = db.ref(path);
+    const handler = ref.on('value', snap => {
+      setData(snap.val());
+    });
+    return () => ref.off('value', handler);
+  }, [path]);
+  return data;
+}
+
+function fbPush(path, val) { return db.ref(path).push(val); }
+function fbSet(path, val) { return db.ref(path).set(val); }
+function fbUpdate(path, val) { return db.ref(path).update(val); }
+function fbRemove(path) { return db.ref(path).remove(); }
+
+// Convert Firebase object to array with keys
+function toArr(obj) {
+  if (!obj) return [];
+  return Object.entries(obj).map(([k, v]) => ({ ...v, _key: k }));
+}
+
+// ─── CONFIG ───
+const ADMIN_PIN = "2026";
+const CONF_START = new Date("2026-04-27T18:00:00-05:00");
+const EJ = ["🔥", "👏", "💡", "🎯"];
+const QR_URL = "https://7levelsblog.com/lc26-wall"; // ← UPDATE to your final page URL
+
+const AGENDA = [
+  { day:1, date:"2026-04-27", label:"Mon, Apr 27", title:"Arrival & Welcome", loc:"The Nelson Sports Club",
+    ev:[{t:"18:00",e:"21:00",n:"Warm Welcome",d:"Fireside Gathering & Networking",i:"🔥"}]},
+  { day:2, date:"2026-04-28", label:"Tue, Apr 28", title:"Partners + Show Ready", loc:"Lincoln Center Conference Room",
+    ev:[
+      {t:"09:00",e:"09:40",n:"Good Morning",d:"Bruce Gerlander · Opening Video",i:"🎬"},
+      {t:"09:40",e:"11:05",n:"State of the Company — Vision Casting",d:"Hinckley, Howe & Adair · 2025 Results · Q&A",i:"📊"},
+      {t:"11:05",e:"11:15",n:"Team Award #1",d:"",i:"🏆"},
+      {t:"11:15",e:"11:30",n:"Break",d:"",i:"☕"},
+      {t:"11:30",e:"12:30",n:"Show Ready — Tangible vs. Intangible",d:"Keefer & Darville",i:"⭐"},
+      {t:"12:30",e:"13:30",n:"Lunch",d:"",i:"🍽️"},
+      {t:"13:30",e:"13:45",n:"Safety Video · Team Award #2",d:"",i:"🏆"},
+      {t:"13:45",e:"14:30",n:"Real World Application",d:"Louie Unga",i:"🌍"},
+      {t:"14:30",e:"16:00",n:"Show Ready — Applying the Standard",d:"Keefer & Darville",i:"⭐"},
+      {t:"16:00",e:"16:30",n:"Digital Show Ready",d:"Amy Spittle",i:"💻"},
+      {t:"16:30",e:"16:45",n:"Claude Pilot Program",d:"Creighton & Hinckley",i:"📢"},
+      {t:"16:45",e:"17:00",n:"MVP Survey Program",d:"Jim Creighton",i:"📢"},
+      {t:"17:00",e:"17:15",n:"Safety Video · Team Award #3",d:"",i:"🏆"},
+      {t:"18:00",e:"21:00",n:"Dinner & Entertainment",d:"Pinstack",i:"🎳"}]},
+  { day:3, date:"2026-04-29", label:"Wed, Apr 29", title:"Finance + People Dev", loc:"Lincoln Center Conference Room",
+    ev:[
+      {t:"09:00",e:"09:15",n:"Good Morning / Recap",d:"Bruce Gerlander et al.",i:"☀️"},
+      {t:"09:15",e:"10:00",n:"Financial Stewardship Fundamentals",d:"Mike Akeroyd",i:"💰"},
+      {t:"10:00",e:"11:00",n:"Flex & Flow Workshop",d:"Akeroyd & Chris May",i:"🔧"},
+      {t:"11:00",e:"11:30",n:"Smart Spending — Labor Management",d:"",i:"💰"},
+      {t:"11:30",e:"12:00",n:"Purchasing — D.O.G.E. Top 10",d:"Stromme, Miller & McColl",i:"💰"},
+      {t:"12:00",e:"12:15",n:"Safety Video · Team Award #4",d:"",i:"🏆"},
+      {t:"12:15",e:"13:15",n:"Lunch",d:"",i:"🍽️"},
+      {t:"13:15",e:"14:00",n:"People Development",d:"Gerlander & Creighton",i:"🌱"},
+      {t:"14:00",e:"14:30",n:"Skill vs. Will Exercise",d:"",i:"🎯"},
+      {t:"14:30",e:"15:00",n:"People Development (cont.)",d:"",i:"🌱"},
+      {t:"15:00",e:"15:15",n:"Safety Video · Purpose Award",d:"",i:"🏆"},
+      {t:"15:15",e:"16:30",n:"Best First Day Ever — Breakout",d:"Alyssa Baker",i:"🚀"},
+      {t:"16:30",e:"17:00",n:"Closing Session",d:"Murphy Award · Closing Video",i:"🎬"},
+      {t:"18:00",e:"18:30",n:"Depart for Dinner",d:"",i:"🚐"},
+      {t:"18:30",e:"21:00",n:"Dinner at Oak'd BBQ",d:"",i:"🍖"}]}
+];
+
+// ─── Helpers ───
+const pt = (d,t) => new Date(`${d}T${t}:00-05:00`);
+const f12 = t => { const[h,m]=t.split(":").map(Number); return `${h===0?12:h>12?h-12:h}:${String(m).padStart(2,"0")} ${h>=12?"PM":"AM"}`; };
+const ago = ts => { const m=Math.floor((Date.now()-ts)/60000); if(m<1)return"now"; if(m<60)return m+"m"; const h=Math.floor(m/60); return h<24?h+"h":Math.floor(h/24)+"d"; };
+
+function compress(file, maxW=800, q=0.6) {
+  return new Promise(r => {
+    const rd = new FileReader();
+    rd.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement("canvas");
+        const ratio = Math.min(maxW/img.width, maxW/img.height, 1);
+        c.width = img.width*ratio; c.height = img.height*ratio;
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        r(c.toDataURL("image/jpeg", q));
+      };
+      img.src = ev.target.result;
+    };
+    rd.readAsDataURL(file);
+  });
+}
+
+// ─── Countdown ───
+function Countdown() {
+  const [d, setD] = useState(CONF_START - Date.now());
+  useEffect(() => { const iv = setInterval(() => setD(CONF_START - Date.now()), 1000); return () => clearInterval(iv); }, []);
+  if (d <= 0) return null;
+  const days=Math.floor(d/864e5), hrs=Math.floor((d%864e5)/36e5), mins=Math.floor((d%36e5)/6e4), secs=Math.floor((d%6e4)/1e3);
+  return (
+    <div style={{display:"flex",gap:16,justifyContent:"center",margin:"18px 0"}}>
+      {[{v:days,l:"Days"},{v:hrs,l:"Hrs"},{v:mins,l:"Min"},{v:secs,l:"Sec"}].map(u=>(
+        <div key={u.l} style={{textAlign:"center"}}>
+          <div style={{fontFamily:"var(--ff)",fontSize:30,fontWeight:800,color:"var(--gold)"}}>{String(u.v).padStart(2,"0")}</div>
+          <div style={{fontSize:9,color:"var(--mute)",textTransform:"uppercase",letterSpacing:2}}>{u.l}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Announcement Banner ───
+function AnnBanner() {
+  const raw = useFirebase("announcements");
+  const anns = toArr(raw).filter(a => a.on);
+  const latest = anns.sort((a,b) => b.ts - a.ts)[0];
+  if (!latest) return null;
+  return (
+    <div style={{padding:"8px 12px",background:"#2D1810",borderBottom:"2px solid var(--red)",display:"flex",alignItems:"center",gap:8,animation:"slideDown .4s"}}>
+      <span style={{fontSize:16}}>📢</span>
+      <div style={{flex:1}}>
+        <div style={{color:"var(--red)",fontSize:8,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Announcement</div>
+        <div style={{color:"var(--txt)",fontSize:13,fontWeight:500}}>{latest.text}</div>
+      </div>
+      <span style={{fontSize:9,color:"var(--mute)"}}>{ago(latest.ts)}</span>
+    </div>
+  );
+}
+
+// ─── QR Code ───
+function QRCode({size=180}) {
+  const src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(QR_URL)}&bgcolor=142018&color=C9A54E&margin=8`;
+  return (
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+      <div style={{background:"#fff",borderRadius:10,padding:8,display:"inline-block"}}>
+        <img src={src} alt="QR Code" width={size} height={size} style={{display:"block",borderRadius:4}} />
+      </div>
+      <div style={{fontSize:9,color:"var(--mute)",maxWidth:220,wordBreak:"break-all",textAlign:"center"}}>{QR_URL}</div>
+    </div>
+  );
+}
+
+// ─── AGENDA TAB ───
+function AgendaTab({dm}) {
+  const [now, setNow] = useState(new Date());
+  const [day, setDay] = useState(null);
+  const rxRaw = useFirebase("reactions");
+  const rx = rxRaw || {};
+
+  useEffect(() => { const iv = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(iv); }, []);
+  useEffect(() => {
+    if (day !== null) return;
+    const td = now.toISOString().slice(0,10);
+    const m = AGENDA.find(d => d.date===td) || AGENDA.find(d => d.date>td) || AGENDA[AGENDA.length-1];
+    setDay(m.day);
+  }, [now, day]);
+
+  const dd = AGENDA.find(d => d.day===day) || AGENDA[0];
+
+  const react = (ek, em) => {
+    const cur = (rx[ek] && rx[ek][em]) || 0;
+    fbUpdate(`reactions/${ek}`, { [em]: cur + 1 });
+  };
+
+  let cur=null, nxt=null;
+  for (const d of AGENDA) { for (const ev of d.ev) {
+    const s=pt(d.date,ev.t), e=pt(d.date,ev.e);
+    if(now>=s&&now<e&&!cur) cur={...ev,dl:d.label};
+    if(s>now&&!nxt) nxt={...ev,dl:d.label};
+    if(cur&&nxt)break;
+  } if(cur&&nxt)break; }
+
+  return (
+    <div>
+      <div style={{padding:"10px 12px",borderBottom:"1px solid var(--border)",background:"rgba(255,107,74,0.05)"}}>
+        {cur ? (
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{width:9,height:9,borderRadius:"50%",background:"var(--red)",boxShadow:"0 0 8px var(--red)",animation:"pulse 2s infinite",display:"inline-block"}} />
+            <div>
+              <div style={{fontSize:9,color:"var(--red)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Happening Now</div>
+              <div style={{fontSize:dm?16:14,fontFamily:"var(--ff)",color:"var(--txt)",fontWeight:700}}>{cur.i} {cur.n}</div>
+              {cur.d && <div style={{fontSize:11,color:"var(--dim)"}}>{cur.d}</div>}
+            </div>
+          </div>
+        ) : nxt ? (
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:15}}>⏳</span>
+            <div>
+              <div style={{fontSize:9,color:"var(--goldDim)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Up Next</div>
+              <div style={{fontSize:dm?16:14,fontFamily:"var(--ff)",color:"var(--txt)",fontWeight:700}}>{nxt.i} {nxt.n}</div>
+              <div style={{fontSize:11,color:"var(--dim)"}}>{f12(nxt.t)} · {nxt.dl}</div>
+            </div>
+          </div>
+        ) : <div style={{fontSize:13,color:"var(--dim)",fontStyle:"italic"}}>Conference complete — thank you!</div>}
+      </div>
+
+      <div style={{display:"flex",gap:5,padding:"7px 12px",borderBottom:"1px solid var(--border)",overflowX:"auto"}}>
+        {AGENDA.map(d => (
+          <button key={d.day} onClick={() => setDay(d.day)} className={`pill ${d.day===day?"active":""}`} style={{position:"relative"}}>
+            Day {d.day}{dm ? ` — ${d.title}` : ""}
+            {d.date===now.toISOString().slice(0,10) && <span style={{position:"absolute",top:-3,right:-3,width:6,height:6,borderRadius:"50%",background:"var(--red)"}} />}
+          </button>
+        ))}
+      </div>
+
+      <div style={{padding:"7px 12px",borderBottom:"1px solid var(--border)"}}>
+        <div style={{fontFamily:"var(--ff)",fontSize:dm?17:14,color:"var(--gold)",fontWeight:700}}>{dd.label}</div>
+        <div style={{fontSize:10,color:"var(--dim)"}}>📍 {dd.loc} · 🎯 {dd.title}</div>
+      </div>
+
+      <div style={{maxHeight:dm?"calc(100vh - 360px)":340,overflowY:"auto",padding:"4px 12px 12px"}}>
+        {dd.ev.map((ev, i) => {
+          const s=pt(dd.date,ev.t), e=pt(dd.date,ev.e);
+          const isA=now>=s&&now<e, isP=now>=e;
+          const ek=`d${dd.day}_${i}`;
+          return (
+            <div key={i} style={{display:"flex",gap:9,padding:"7px 0",opacity:isP?.4:1,animation:"fadeIn .4s"}}>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",width:26,flexShrink:0}}>
+                <div style={{width:isA?12:8,height:isA?12:8,borderRadius:"50%",background:isA?"var(--red)":isP?"var(--mute)":"var(--goldDim)",boxShadow:isA?"0 0 10px var(--red)":"none",zIndex:1,flexShrink:0}} />
+                {i<dd.ev.length-1 && <div style={{width:2,flex:1,marginTop:2,background:"var(--border)"}} />}
+              </div>
+              <div style={{flex:1,background:isA?"rgba(255,107,74,0.08)":"transparent",border:isA?"1px solid rgba(255,107,74,0.25)":"1px solid transparent",borderRadius:9,padding:isA?9:"2px 0"}}>
+                <div style={{display:"flex",alignItems:"center",gap:5}}>
+                  <span style={{fontSize:11,color:isA?"var(--red)":isP?"var(--mute)":"var(--goldDim)",fontWeight:600}}>{f12(ev.t)}</span>
+                  {isA && <span style={{fontSize:8,padding:"1px 5px",borderRadius:7,background:"var(--red)",color:"#fff",fontWeight:700,letterSpacing:1,animation:"pulse 2s infinite"}}>LIVE</span>}
+                </div>
+                <div style={{fontSize:dm?14:12,fontFamily:"var(--ff)",color:isP?"var(--mute)":"var(--txt)",fontWeight:isA?700:600,marginTop:2}}>{ev.i} {ev.n}</div>
+                {ev.d && <div style={{fontSize:10,color:isA?"var(--dim)":"var(--mute)",marginTop:1}}>{ev.d}</div>}
+                <div style={{display:"flex",gap:3,marginTop:4,flexWrap:"wrap"}}>
+                  {EJ.map(em => {
+                    const cnt = (rx[ek] && rx[ek][em]) || 0;
+                    return <button key={em} onClick={() => react(ek,em)} className={`emoji-btn ${cnt>0?"has":""}`}>{em}{cnt>0 && <span style={{fontSize:9,fontWeight:600,color:"var(--gold)"}}>{cnt}</span>}</button>;
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Q&A TAB ───
+function QTab({dm}) {
+  const raw = useFirebase("questions");
+  const items = toArr(raw);
+  const [sort, setSort] = useState("votes");
+  const [txt, setTxt] = useState(""); const [nm, setNm] = useState("");
+
+  const sub = () => {
+    if (!txt.trim()) return;
+    fbPush("questions", { text: txt.trim(), name: nm.trim()||"Anonymous", ts: Date.now(), votes: 0 });
+    setTxt("");
+  };
+  const up = (key, cur) => fbUpdate(`questions/${key}`, { votes: (cur||0) + 1 });
+
+  const sorted = [...items].sort((a,b) => sort==="votes" ? (b.votes||0)-(a.votes||0) : b.ts-a.ts);
+
+  return (
+    <div>
+      {!dm && (
+        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+          <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name (optional)" className="field" style={{maxWidth:200,marginBottom:7,display:"block"}} />
+          <div style={{display:"flex",gap:7}}>
+            <textarea value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Ask a question..." rows={2} className="field" style={{flex:1,resize:"none"}}
+              onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sub();}}} />
+            <button onClick={sub} className="btn-gold" style={{alignSelf:"flex-end"}}>Submit</button>
+          </div>
+        </div>
+      )}
+      <div style={{display:"flex",gap:4,padding:"6px 12px"}}>
+        <button className={`pill ${sort==="votes"?"active":""}`} onClick={()=>setSort("votes")}>Top</button>
+        <button className={`pill ${sort==="recent"?"active":""}`} onClick={()=>setSort("recent")}>New</button>
+      </div>
+      <div style={{maxHeight:dm?"calc(100vh - 260px)":360,overflowY:"auto"}}>
+        {sorted.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No questions yet — be the first!</p>}
+        {sorted.map(it => (
+          <div key={it._key} className="card-hover" style={{padding:"9px 12px",borderBottom:"1px solid var(--border)",display:"flex",gap:10}}>
+            <button onClick={() => up(it._key, it.votes)} style={{display:"flex",flexDirection:"column",alignItems:"center",background:"none",border:"1px solid var(--border)",borderRadius:7,padding:"5px 7px",color:"var(--dim)",minWidth:38,cursor:"pointer",transition:"all .2s"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.color="var(--gold)";}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.color="var(--dim)";}}>
+              <span style={{fontSize:14}}>👍</span>
+              <span style={{fontSize:11,fontWeight:600}}>{it.votes||0}</span>
+            </button>
+            <div style={{flex:1}}>
+              <p style={{color:"var(--txt)",fontSize:dm?15:13,lineHeight:1.5}}>{it.text}</p>
+              <div style={{marginTop:3,fontSize:10,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── SHOUTOUTS TAB ───
+function CTab({dm}) {
+  const raw = useFirebase("comments");
+  const items = toArr(raw).sort((a,b) => b.ts - a.ts);
+  const [txt, setTxt] = useState(""); const [nm, setNm] = useState("");
+
+  const sub = () => {
+    if (!txt.trim()) return;
+    fbPush("comments", { text: txt.trim(), name: nm.trim()||"Anonymous", ts: Date.now() });
+    setTxt("");
+  };
+
+  return (
+    <div>
+      {!dm && (
+        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+          <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name (optional)" className="field" style={{maxWidth:200,marginBottom:7,display:"block"}} />
+          <div style={{display:"flex",gap:7}}>
+            <input value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Drop a shoutout..." className="field" style={{flex:1}} onKeyDown={e=>{if(e.key==="Enter")sub();}} />
+            <button onClick={sub} className="btn-gold">Submit</button>
+          </div>
+        </div>
+      )}
+      <div style={{maxHeight:dm?"calc(100vh - 200px)":380,overflowY:"auto"}}>
+        {items.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No shoutouts yet!</p>}
+        {items.map(it => (
+          <div key={it._key} className="card-hover" style={{padding:"9px 12px",borderBottom:"1px solid var(--border)"}}>
+            <p style={{color:"var(--txt)",fontSize:dm?15:13,lineHeight:1.5}}>{it.text}</p>
+            <div style={{marginTop:3,fontSize:10,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── PHOTOS TAB ───
+function PTab({dm}) {
+  const raw = useFirebase("photos");
+  const photos = toArr(raw).sort((a,b) => b.ts - a.ts);
+  const [uploading, setUploading] = useState(false);
+  const [cap, setCap] = useState(""); const [nm, setNm] = useState(""); const [vp, setVp] = useState(null);
+  const fr = useRef();
+
+  const upload = async e => {
+    const f = e.target.files?.[0]; if(!f) return;
+    setUploading(true);
+    try {
+      const data = await compress(f);
+      fbPush("photos", { data, caption: cap.trim(), name: nm.trim()||"Anonymous", ts: Date.now() });
+      setCap(""); fr.current.value = "";
+    } catch(err) { console.error(err); }
+    setUploading(false);
+  };
+
+  return (
+    <div>
+      {!dm && (
+        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+          <div style={{display:"flex",gap:6,marginBottom:7,flexWrap:"wrap"}}>
+            <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name" className="field" style={{width:140,flex:"none"}} />
+            <input value={cap} onChange={e=>setCap(e.target.value)} placeholder="Caption" className="field" style={{flex:1,minWidth:100}} />
+          </div>
+          <input ref={fr} type="file" accept="image/*" capture="environment" onChange={upload} style={{display:"none"}} />
+          <button onClick={() => fr.current?.click()} disabled={uploading} className="btn-gold" style={{opacity:uploading?.6:1}}>
+            {uploading ? "Uploading..." : "📷 Upload Photo"}
+          </button>
+        </div>
+      )}
+      <div style={{display:"grid",gridTemplateColumns:dm?"repeat(auto-fill,minmax(220px,1fr))":"repeat(auto-fill,minmax(130px,1fr))",gap:8,padding:12,maxHeight:dm?"calc(100vh - 240px)":360,overflowY:"auto"}}>
+        {photos.length===0 && <p style={{gridColumn:"1/-1",textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No photos yet!</p>}
+        {photos.map(p => (
+          <div key={p._key} onClick={() => setVp(p)} style={{borderRadius:8,overflow:"hidden",cursor:"pointer",border:"1px solid var(--border)",background:"var(--input)",transition:"transform .2s"}}
+            onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+            <img src={p.data} alt="" style={{width:"100%",aspectRatio:"1",objectFit:"cover",display:"block"}} />
+            <div style={{padding:"5px 7px"}}>
+              {p.caption && <div style={{fontSize:11,color:"var(--txt)"}}>{p.caption}</div>}
+              <div style={{fontSize:9,color:"var(--mute)"}}><span style={{color:"var(--goldDim)"}}>{p.name}</span> · {ago(p.ts)}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {vp && (
+        <div className="overlay" onClick={() => setVp(null)}>
+          <div onClick={e=>e.stopPropagation()} style={{maxWidth:"90vw",textAlign:"center"}}>
+            <img src={vp.data} alt="" style={{maxWidth:"100%",maxHeight:"78vh",borderRadius:12}} />
+            <div style={{marginTop:8,color:"var(--txt)"}}>{vp.caption && <p>{vp.caption}</p>}<p style={{fontSize:12,color:"var(--dim)",margin:"2px 0 0"}}>{vp.name} · {ago(vp.ts)}</p></div>
+            <button onClick={() => setVp(null)} className="btn-gold" style={{marginTop:10}}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── POLLS TAB ───
+function PoTab({dm, admin}) {
+  const raw = useFirebase("polls");
+  const polls = toArr(raw);
+  const [q, setQ] = useState(""); const [opts, setOpts] = useState(["","",""]);
+
+  const create = () => {
+    const valid = opts.filter(o => o.trim());
+    if (!q.trim() || valid.length < 2) return;
+    fbPush("polls", { q: q.trim(), opts: valid.map(o => ({t:o.trim(),v:0})), on: true, ts: Date.now() });
+    setQ(""); setOpts(["","",""]);
+  };
+  const toggle = (key, cur) => fbUpdate(`polls/${key}`, { on: !cur });
+  const vote = (key, opts, oi) => {
+    const no = [...opts]; no[oi] = {...no[oi], v: no[oi].v + 1};
+    fbUpdate(`polls/${key}`, { opts: no });
+  };
+
+  const act = polls.filter(p=>p.on), cls = polls.filter(p=>!p.on);
+
+  return (
+    <div style={{maxHeight:dm?"calc(100vh - 200px)":440,overflowY:"auto"}}>
+      {admin && (
+        <div style={{padding:12,borderBottom:"1px solid var(--border)",background:"var(--card)"}}>
+          <div style={{fontSize:9,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Create Poll (Admin)</div>
+          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Question..." className="field" style={{marginBottom:6}} />
+          {opts.map((o,i) => <input key={i} value={o} onChange={e=>{const n=[...opts];n[i]=e.target.value;setOpts(n);}} placeholder={`Option ${i+1}`} className="field" style={{marginBottom:3,fontSize:12,padding:7}} />)}
+          <div style={{display:"flex",gap:6,marginTop:6}}>
+            <button onClick={() => setOpts([...opts,""])} className="btn-sm">+ Option</button>
+            <button onClick={create} className="btn-gold" style={{padding:"5px 14px",fontSize:12}}>Create</button>
+          </div>
+        </div>
+      )}
+      {polls.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No polls yet</p>}
+      {[...act,...cls].map(p => {
+        const total = p.opts.reduce((s,o) => s+o.v, 0);
+        return (
+          <div key={p._key} style={{padding:12,borderBottom:"1px solid var(--border)",opacity:p.on?1:.5}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6}}>
+              <div style={{fontSize:dm?15:13,fontFamily:"var(--ff)",fontWeight:700}}>{p.q}</div>
+              <div style={{display:"flex",gap:4,alignItems:"center"}}>
+                {p.on && <span style={{fontSize:8,padding:"1px 5px",borderRadius:6,background:"var(--red)",color:"#fff",fontWeight:700}}>LIVE</span>}
+                {admin && <button onClick={() => toggle(p._key, p.on)} className="btn-sm">{p.on?"Close":"Open"}</button>}
+              </div>
+            </div>
+            <div style={{marginTop:8,display:"flex",flexDirection:"column",gap:4}}>
+              {p.opts.map((o,i) => {
+                const pct = total>0 ? Math.round(o.v/total*100) : 0;
+                return (
+                  <button key={i} onClick={() => p.on && vote(p._key, p.opts, i)} disabled={!p.on}
+                    style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",background:"var(--input)",border:"1px solid var(--border)",borderRadius:8,cursor:p.on?"pointer":"default",position:"relative",overflow:"hidden",textAlign:"left"}}>
+                    <div style={{position:"absolute",left:0,top:0,bottom:0,width:`${pct}%`,background:"var(--glow)",transition:"width .5s",borderRadius:8}} />
+                    <span style={{position:"relative",flex:1,fontSize:12,fontWeight:500,color:"var(--txt)"}}>{o.t}</span>
+                    <span style={{position:"relative",fontSize:11,color:"var(--gold)",fontWeight:700}}>{pct}%</span>
+                    <span style={{position:"relative",fontSize:9,color:"var(--mute)"}}>{o.v}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{marginTop:4,fontSize:9,color:"var(--mute)"}}>{total} vote{total!==1?"s":""}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── TAKEAWAYS TAB ───
+function TkTab({dm}) {
+  const raw = useFirebase("takeaways");
+  const items = toArr(raw);
+  const [day, setDay] = useState(0);
+  const [txt, setTxt] = useState(""); const [nm, setNm] = useState("");
+
+  const sub = () => {
+    if (!txt.trim()) return;
+    fbPush("takeaways", { text: txt.trim(), name: nm.trim()||"Anonymous", day: day||0, ts: Date.now() });
+    setTxt("");
+  };
+  const filtered = day===0 ? items : items.filter(i => i.day===day);
+  const pills = [{v:0,l:"All"},{v:1,l:"Day 1"},{v:2,l:"Day 2"},{v:3,l:"Day 3"}];
+
+  return (
+    <div>
+      <div style={{display:"flex",gap:4,padding:"8px 12px",borderBottom:"1px solid var(--border)",alignItems:"center"}}>
+        <span style={{fontSize:10,color:"var(--mute)"}}>Day:</span>
+        {pills.map(d => <button key={d.v} onClick={() => setDay(d.v)} className={`pill ${day===d.v?"active":""}`}>{d.l}</button>)}
+      </div>
+      {!dm && (
+        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+          <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name (optional)" className="field" style={{maxWidth:200,marginBottom:7,display:"block"}} />
+          <div style={{display:"flex",gap:7}}>
+            <input value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Share your key takeaway..." className="field" style={{flex:1}} onKeyDown={e=>{if(e.key==="Enter")sub();}} />
+            <button onClick={sub} className="btn-gold">Submit</button>
+          </div>
+        </div>
+      )}
+      <div style={{maxHeight:dm?"calc(100vh - 260px)":340,overflowY:"auto"}}>
+        {filtered.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No takeaways yet</p>}
+        {[...filtered].sort((a,b) => b.ts-a.ts).map(it => (
+          <div key={it._key} style={{padding:"10px 12px",borderBottom:"1px solid var(--border)"}}>
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
+              {it.day>0 && <span style={{fontSize:9,padding:"1px 7px",borderRadius:8,background:"var(--glow)",border:"1px solid var(--border)",color:"var(--gold)",fontWeight:600}}>Day {it.day}</span>}
+              <span style={{fontSize:10,color:"var(--goldDim)",fontWeight:500}}>{it.name}</span>
+              <span style={{fontSize:9,color:"var(--mute)"}}>{ago(it.ts)}</span>
+            </div>
+            <p style={{margin:"3px 0 0",fontSize:13,lineHeight:1.5}}>💡 {it.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── EXPORT ───
+function ExportTab({dm}) {
+  const q = toArr(useFirebase("questions"));
+  const c = toArr(useFirebase("comments"));
+  const ph = toArr(useFirebase("photos"));
+  const po = toArr(useFirebase("polls"));
+  const rx = useFirebase("reactions") || {};
+  const tk = toArr(useFirebase("takeaways"));
+
+  const topQ = [...q].sort((a,b) => (b.votes||0)-(a.votes||0)).slice(0,10);
+  const hs = {fontFamily:"var(--ff)",fontSize:15,color:"var(--gold)",fontWeight:700,marginBottom:6,borderBottom:"1px solid var(--border)",paddingBottom:4};
+  const ts = {fontSize:13,lineHeight:1.6};
+
+  const rxSum = [];
+  AGENDA.forEach(day => day.ev.forEach((ev,i) => {
+    const r = rx[`d${day.day}_${i}`];
+    if(r) { const total = Object.values(r).reduce((s,v)=>s+v,0); if(total>0) rxSum.push({title:ev.n,day:day.day,...r,total}); }
+  }));
+  rxSum.sort((a,b) => b.total - a.total);
+
+  return (
+    <div style={{padding:16,maxHeight:dm?"calc(100vh - 180px)":500,overflowY:"auto"}}>
+      <h2 style={{fontFamily:"var(--ff)",fontSize:20,color:"var(--gold)",fontWeight:800,margin:"0 0 16px"}}>📊 LC26 Summary</h2>
+      <div style={{marginBottom:20}}><div style={hs}>Overview</div><div style={ts}>{q.length} questions · {c.length} shoutouts · {ph.length} photos · {po.length} polls · {tk.length} takeaways</div></div>
+      <div style={{marginBottom:20}}><div style={hs}>Top Questions</div>
+        {topQ.length===0 ? <div style={ts}>None</div> : topQ.map((q,i) => <div key={q._key} style={{...ts,padding:"2px 0"}}>{i+1}. {q.text} <span style={{color:"var(--gold)"}}>({q.votes} votes)</span> — {q.name}</div>)}
+      </div>
+      <div style={{marginBottom:20}}><div style={hs}>Session Engagement</div>
+        {rxSum.length===0 ? <div style={ts}>None</div> : rxSum.slice(0,8).map((r,i) => <div key={i} style={{...ts,padding:"2px 0"}}>Day {r.day} — {r.title}: {EJ.map(em => r[em]?` ${em}${r[em]}`:"")} <span style={{color:"var(--gold)"}}>({r.total})</span></div>)}
+      </div>
+      <div style={{marginBottom:20}}><div style={hs}>Poll Results</div>
+        {po.map(p => { const total=p.opts.reduce((s,o)=>s+o.v,0); return (
+          <div key={p._key} style={{marginBottom:10}}>
+            <div style={{...ts,fontWeight:600}}>{p.q} ({total} votes)</div>
+            {p.opts.map((o,i) => <div key={i} style={{...ts,paddingLeft:12}}>{o.t}: {total>0?Math.round(o.v/total*100):0}% ({o.v})</div>)}
+          </div>
+        ); })}
+      </div>
+      {[1,2,3].map(d => { const dtk=tk.filter(t=>t.day===d); if(!dtk.length)return null; return (
+        <div key={d} style={{marginBottom:20}}>
+          <div style={hs}>Day {d} Takeaways ({dtk.length})</div>
+          {dtk.map(t => <div key={t._key} style={{...ts,padding:"2px 0"}}>💡 {t.text} — {t.name}</div>)}
+        </div>
+      ); })}
+    </div>
+  );
+}
+
+// ─── ADMIN MODAL ───
+function AdminModal({onClose}) {
+  const [txt, setTxt] = useState("");
+  const raw = useFirebase("announcements");
+  const anns = toArr(raw).filter(a => a.on);
+
+  const post = () => { if(!txt.trim())return; fbPush("announcements",{text:txt.trim(),on:true,ts:Date.now()}); setTxt(""); };
+  const dismiss = key => fbUpdate(`announcements/${key}`, {on:false});
+
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
+          <h2 style={{fontFamily:"var(--ff)",fontSize:17,color:"var(--gold)",fontWeight:700}}>⚙️ Admin</h2>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"var(--dim)",fontSize:17,cursor:"pointer"}}>✕</button>
+        </div>
+        <div style={{fontSize:9,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Post Announcement</div>
+        <div style={{display:"flex",gap:6}}>
+          <input value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Type announcement..." className="field" onKeyDown={e=>{if(e.key==="Enter")post();}} />
+          <button onClick={post} className="btn-gold" style={{fontSize:12}}>Send</button>
+        </div>
+        {anns.map(a => (
+          <div key={a._key} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 8px",background:"var(--input)",borderRadius:5,marginTop:6}}>
+            <span style={{fontSize:12}}>{a.text}</span>
+            <button onClick={() => dismiss(a._key)} className="btn-sm">Dismiss</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── WELCOME ───
+function Welcome({onEnter}) {
+  return (
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 20px",textAlign:"center",minHeight:"100vh"}}>
+      <div style={{fontSize:10,letterSpacing:4,textTransform:"uppercase",color:"var(--goldDim)",fontWeight:600,marginBottom:10}}>Century Golf Partners</div>
+      <h1 style={{fontFamily:"var(--ff)",fontWeight:800,fontSize:28,color:"var(--gold)",lineHeight:1.1,marginBottom:5}}>LC26 Live Wall</h1>
+      <p style={{fontFamily:"var(--ff)",fontStyle:"italic",fontSize:14,color:"var(--dim)",marginBottom:18}}>Back to the Basics — Past · Present · People</p>
+      {CONF_START > Date.now() && <Countdown />}
+      <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:14,padding:20,marginBottom:18}}>
+        <QRCode />
+      </div>
+      <div style={{display:"flex",gap:5,flexWrap:"wrap",justifyContent:"center",marginBottom:18}}>
+        {["📋 Agenda","💬 Q&A","🎉 Shoutouts","📸 Photos","📊 Polls","💡 Takeaways"].map(x => (
+          <span key={x} style={{padding:"4px 11px",borderRadius:14,background:"var(--glow)",border:"1px solid var(--border)",fontSize:11}}>{x}</span>
+        ))}
+      </div>
+      <button onClick={onEnter} className="btn-gold" style={{padding:"12px 32px",fontSize:15}}>Enter the Wall →</button>
+      <p style={{marginTop:24,fontSize:10,color:"var(--mute)"}}>April 27–30, 2026 · Dallas, TX</p>
+    </div>
+  );
+}
+
+// ─── MAIN APP ───
+function App() {
+  const [scr, setScr] = useState("welcome");
+  const [tab, setTab] = useState("agenda");
+  const [dm, setDm] = useState(false);
+  const [admin, setAdmin] = useState(false);
+  const [showAdm, setShowAdm] = useState(false);
+  const [showExp, setShowExp] = useState(false);
+  const [pin, setPin] = useState(""); const [showPin, setShowPin] = useState(false);
+
+  // Live counts from Firebase
+  const qRaw = useFirebase("questions");
+  const cRaw = useFirebase("comments");
+  const phRaw = useFirebase("photos");
+  const poRaw = useFirebase("polls");
+  const tkRaw = useFirebase("takeaways");
+
+  const cnt = {
+    q: toArr(qRaw).length,
+    c: toArr(cRaw).length,
+    p: toArr(phRaw).length,
+    po: toArr(poRaw).filter(p=>p.on).length,
+    tk: toArr(tkRaw).length,
+  };
+
+  const tryPin = () => { if(pin===ADMIN_PIN){setAdmin(true);setShowPin(false);setPin("");}else setPin(""); };
+
+  const tabs = [
+    {id:"agenda",label:"Agenda",icon:"📋",count:0},
+    {id:"questions",label:"Q&A",icon:"💬",count:cnt.q},
+    {id:"comments",label:"Shoutouts",icon:"🎉",count:cnt.c},
+    {id:"photos",label:"Photos",icon:"📸",count:cnt.p},
+    {id:"polls",label:"Polls",icon:"📊",count:cnt.po},
+    {id:"takeaways",label:"Takeaways",icon:"💡",count:cnt.tk},
+  ];
+
+  if (scr==="welcome") return <Welcome onEnter={() => setScr("main")} />;
+
+  return (
+    <div className={dm?"dm":""}>
+      {/* Header */}
+      <div style={{padding:"8px 12px",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center",background:"var(--card)",flexWrap:"wrap",gap:4}}>
+        <div style={{display:"flex",alignItems:"baseline",gap:7}}>
+          <h1 style={{fontFamily:"var(--ff)",fontWeight:700,fontSize:dm?20:15,color:"var(--gold)"}}> LC26 Live Wall</h1>
+          <span style={{fontSize:9,color:"var(--mute)",letterSpacing:2,textTransform:"uppercase"}}>CGP</span>
+        </div>
+        <div style={{display:"flex",gap:4,alignItems:"center",flexWrap:"wrap"}}>
+          <button onClick={() => setScr("welcome")} className="btn-sm">QR</button>
+          <button onClick={() => setDm(!dm)} className={`btn-sm ${dm?"active":""}`}>{dm?"✦ Display":"Display"}</button>
+          {admin ? (<>
+            <button onClick={() => setShowAdm(true)} className="btn-sm" style={{borderColor:"var(--red)",color:"var(--red)"}}>⚙️</button>
+            <button onClick={() => setShowExp(!showExp)} className="btn-sm" style={{borderColor:"var(--goldDim)",color:"var(--goldDim)"}}>📊</button>
+          </>) : (
+            <button onClick={() => setShowPin(true)} className="btn-sm">⚙️</button>
+          )}
+        </div>
+      </div>
+
+      <AnnBanner />
+
+      {!showExp && (
+        <div style={{display:"flex",gap:2,borderBottom:"1px solid var(--border)",padding:"0 6px",overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)} className={`tab-btn ${tab===t.id?"active":""}`}>
+              {t.icon} {t.label}
+              {t.count>0 && <span className="tab-count" style={{background:tab===t.id?"var(--gold)":"var(--border)",color:tab===t.id?"var(--bg)":"var(--dim)"}}>{t.count}</span>}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div style={{animation:"fadeIn .3s"}}>
+        {showExp ? <ExportTab dm={dm} /> : (<>
+          {tab==="agenda" && <AgendaTab dm={dm} />}
+          {tab==="questions" && <QTab dm={dm} />}
+          {tab==="comments" && <CTab dm={dm} />}
+          {tab==="photos" && <PTab dm={dm} />}
+          {tab==="polls" && <PoTab dm={dm} admin={admin} />}
+          {tab==="takeaways" && <TkTab dm={dm} />}
+        </>)}
+      </div>
+
+      {showAdm && <AdminModal onClose={() => setShowAdm(false)} />}
+
+      {showPin && (
+        <div className="overlay" onClick={() => {setShowPin(false);setPin("");}}>
+          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:260,textAlign:"center"}}>
+            <div style={{fontFamily:"var(--ff)",fontSize:15,color:"var(--gold)",fontWeight:700,marginBottom:12}}>Admin Access</div>
+            <input value={pin} onChange={e=>setPin(e.target.value)} type="password" maxLength={4} placeholder="PIN"
+              className="field" style={{width:100,fontSize:22,textAlign:"center",letterSpacing:6,display:"inline-block"}}
+              onKeyDown={e=>{if(e.key==="Enter")tryPin();}} autoFocus />
+            <div style={{marginTop:12,display:"flex",gap:6,justifyContent:"center"}}>
+              <button onClick={() => {setShowPin(false);setPin("");}} className="btn-sm" style={{padding:"6px 12px"}}>Cancel</button>
+              <button onClick={tryPin} className="btn-gold" style={{padding:"6px 14px",fontSize:12}}>Unlock</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+</script>
+</body>
+</html>
