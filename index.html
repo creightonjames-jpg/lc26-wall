@@ -13,7 +13,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-/* WordPress theme overrides — kill all chrome */
+/* WordPress theme overrides */
 html,body,.site,.site-content,.entry-content,.post-content,.page-content,
 .wp-site-blocks,.wp-block-post-content,.has-global-padding,
 article,main,.site-main,#main,#content,#primary,
@@ -36,36 +36,58 @@ body{overflow-x:hidden}
   --ff:'Playfair Display',Georgia,serif;
   --fs:'Source Sans 3','Segoe UI',sans-serif;
 }
-html,body,#root{min-height:100vh;background:var(--bg);color:var(--txt);font-family:var(--fs)}
-::-webkit-scrollbar{width:5px}
+html,body,#root{min-height:100vh;background:var(--bg);color:var(--txt);font-family:var(--fs);font-size:18px;line-height:1.5}
+::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 12px var(--red)}50%{box-shadow:0 0 28px var(--red),0 0 48px rgba(255,107,74,.3)}}
 button{font-family:var(--fs);cursor:pointer}
 input,textarea{font-family:var(--fs)}
-.tab-btn{padding:9px 13px;background:none;border:none;font-family:var(--ff);font-size:12px;font-weight:400;white-space:nowrap;border-bottom:3px solid transparent;transition:all .3s;color:var(--dim)}
-.tab-btn.active{color:var(--gold);font-weight:700;border-bottom-color:var(--gold)}
-.tab-count{margin-left:4px;padding:1px 6px;border-radius:9px;font-size:9px;font-family:var(--fs);font-weight:600}
-.field{padding:9px;background:var(--input);border:1px solid var(--border);border-radius:7px;color:var(--txt);font-size:13px;outline:none;transition:border-color .2s;width:100%}
-.field:focus{border-color:var(--gold)}
-.btn-gold{padding:9px 18px;background:linear-gradient(135deg,var(--gold),var(--goldDim));color:var(--bg);border:none;border-radius:7px;font-family:var(--ff);font-weight:700;font-size:13px;white-space:nowrap;box-shadow:0 4px 16px var(--glow);transition:transform .2s}
-.btn-gold:hover{transform:translateY(-1px)}
-.btn-sm{padding:3px 8px;background:none;border:1px solid var(--border);border-radius:5px;color:var(--dim);font-size:10px;transition:all .2s}
+
+/* Tabs — big, tappable */
+.tab-btn{padding:14px 20px;background:none;border:none;font-family:var(--ff);font-size:17px;font-weight:400;white-space:nowrap;border-bottom:4px solid transparent;transition:all .3s;color:var(--dim);letter-spacing:.3px}
+.tab-btn.active{color:var(--gold);font-weight:700;border-bottom-color:var(--gold);text-shadow:0 0 20px rgba(201,165,78,.2)}
+.tab-count{margin-left:6px;padding:3px 9px;border-radius:12px;font-size:13px;font-family:var(--fs);font-weight:700}
+
+/* Fields — big touch targets */
+.field{padding:14px 16px;background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--txt);font-size:17px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+.field:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,165,78,.15)}
+
+/* Gold button — prominent CTA */
+.btn-gold{padding:14px 28px;background:linear-gradient(135deg,var(--gold),var(--goldDim));color:var(--bg);border:none;border-radius:10px;font-family:var(--ff);font-weight:700;font-size:17px;white-space:nowrap;box-shadow:0 4px 20px var(--glow);transition:transform .2s,box-shadow .2s;letter-spacing:.3px}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,165,78,.3)}
+.btn-gold:active{transform:scale(.97)}
+
+/* Small buttons */
+.btn-sm{padding:6px 14px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--dim);font-size:14px;transition:all .2s}
 .btn-sm:hover{border-color:var(--gold);color:var(--gold)}
 .btn-sm.active{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:600}
-.pill{padding:3px 10px;border-radius:12px;border:1px solid var(--border);font-size:10px;font-weight:500;cursor:pointer;transition:all .2s;background:transparent;color:var(--dim)}
-.pill.active{background:var(--glow);border-color:var(--goldDim);color:var(--gold)}
-.emoji-btn{padding:2px 6px;border-radius:10px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:2px;color:var(--dim);transition:all .15s}
-.emoji-btn:hover{border-color:var(--gold)}
-.emoji-btn.has{background:var(--glow)}
+
+/* Pills */
+.pill{padding:6px 16px;border-radius:16px;border:1px solid var(--border);font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;background:transparent;color:var(--dim)}
+.pill.active{background:var(--glow);border-color:var(--goldDim);color:var(--gold);font-weight:600}
+
+/* Emoji reactions — bigger tap target */
+.emoji-btn{padding:5px 10px;border-radius:14px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:18px;display:inline-flex;align-items:center;gap:4px;color:var(--dim);transition:all .15s}
+.emoji-btn:hover{border-color:var(--gold);transform:scale(1.1)}
+.emoji-btn:active{transform:scale(.95)}
+.emoji-btn.has{background:var(--glow);border-color:var(--goldDim)}
+
+/* Cards */
 .card-hover{transition:background .2s}
 .card-hover:hover{background:var(--glow)}
-.overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:440px;width:100%;max-height:75vh;overflow-y:auto}
-.dm .tab-btn{font-size:16px;padding:14px 20px}
-.dm .field{font-size:16px;padding:14px}
+
+/* Overlays */
+.overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .3s;backdrop-filter:blur(4px)}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+
+/* Display mode overrides */
+.dm .tab-btn{font-size:22px;padding:18px 28px}
+.dm .field{font-size:20px;padding:18px}
+.dm .btn-gold{font-size:20px;padding:18px 36px}
 </style>
 </head>
 <body>
@@ -179,8 +201,8 @@ function Countdown() {
     <div style={{display:"flex",gap:16,justifyContent:"center",margin:"18px 0"}}>
       {[{v:days,l:"Days"},{v:hrs,l:"Hrs"},{v:mins,l:"Min"},{v:secs,l:"Sec"}].map(u=>(
         <div key={u.l} style={{textAlign:"center"}}>
-          <div style={{fontFamily:"var(--ff)",fontSize:30,fontWeight:800,color:"var(--gold)"}}>{String(u.v).padStart(2,"0")}</div>
-          <div style={{fontSize:9,color:"var(--mute)",textTransform:"uppercase",letterSpacing:2}}>{u.l}</div>
+          <div style={{fontFamily:"var(--ff)",fontSize:42,fontWeight:800,color:"var(--gold)"}}>{String(u.v).padStart(2,"0")}</div>
+          <div style={{fontSize:17,color:"var(--mute)",textTransform:"uppercase",letterSpacing:2}}>{u.l}</div>
         </div>
       ))}
     </div>
@@ -194,13 +216,13 @@ function AnnBanner() {
   const latest = anns.sort((a,b) => b.ts - a.ts)[0];
   if (!latest) return null;
   return (
-    <div style={{padding:"8px 12px",background:"#2D1810",borderBottom:"2px solid var(--red)",display:"flex",alignItems:"center",gap:8,animation:"slideDown .4s"}}>
+    <div style={{padding:"14px 20px",background:"#2D1810",borderBottom:"2px solid var(--red)",display:"flex",alignItems:"center",gap:8,animation:"slideDown .4s"}}>
       <span style={{fontSize:16}}>📢</span>
       <div style={{flex:1}}>
-        <div style={{color:"var(--red)",fontSize:8,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Announcement</div>
-        <div style={{color:"var(--txt)",fontSize:13,fontWeight:500}}>{latest.text}</div>
+        <div style={{color:"var(--red)",fontSize:12,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Announcement</div>
+        <div style={{color:"var(--txt)",fontSize:17,fontWeight:500}}>{latest.text}</div>
       </div>
-      <span style={{fontSize:9,color:"var(--mute)"}}>{ago(latest.ts)}</span>
+      <span style={{fontSize:17,color:"var(--mute)"}}>{ago(latest.ts)}</span>
     </div>
   );
 }
@@ -213,7 +235,7 @@ function QRCode({size=180}) {
       <div style={{background:"#fff",borderRadius:10,padding:8,display:"inline-block"}}>
         <img src={src} alt="QR Code" width={size} height={size} style={{display:"block",borderRadius:4}} />
       </div>
-      <div style={{fontSize:9,color:"var(--mute)",maxWidth:220,wordBreak:"break-all",textAlign:"center"}}>{QR_URL}</div>
+      <div style={{fontSize:17,color:"var(--mute)",maxWidth:220,wordBreak:"break-all",textAlign:"center"}}>{QR_URL}</div>
     </div>
   );
 }
@@ -250,29 +272,29 @@ function AgendaTab({dm}) {
 
   return (
     <div>
-      <div style={{padding:"10px 12px",borderBottom:"1px solid var(--border)",background:"rgba(255,107,74,0.05)"}}>
+      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",background:"rgba(255,107,74,0.05)"}}>
         {cur ? (
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <span style={{width:9,height:9,borderRadius:"50%",background:"var(--red)",boxShadow:"0 0 8px var(--red)",animation:"pulse 2s infinite",display:"inline-block"}} />
             <div>
-              <div style={{fontSize:9,color:"var(--red)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Happening Now</div>
-              <div style={{fontSize:dm?16:14,fontFamily:"var(--ff)",color:"var(--txt)",fontWeight:700}}>{cur.i} {cur.n}</div>
-              {cur.d && <div style={{fontSize:11,color:"var(--dim)"}}>{cur.d}</div>}
+              <div style={{fontSize:17,color:"var(--red)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Happening Now</div>
+              <div style={{fontSize:dm?22:18,fontFamily:"var(--ff)",color:"var(--txt)",fontWeight:700}}>{cur.i} {cur.n}</div>
+              {cur.d && <div style={{fontSize:19,color:"var(--dim)"}}>{cur.d}</div>}
             </div>
           </div>
         ) : nxt ? (
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <span style={{fontSize:15}}>⏳</span>
             <div>
-              <div style={{fontSize:9,color:"var(--goldDim)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Up Next</div>
-              <div style={{fontSize:dm?16:14,fontFamily:"var(--ff)",color:"var(--txt)",fontWeight:700}}>{nxt.i} {nxt.n}</div>
-              <div style={{fontSize:11,color:"var(--dim)"}}>{f12(nxt.t)} · {nxt.dl}</div>
+              <div style={{fontSize:17,color:"var(--goldDim)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5}}>Up Next</div>
+              <div style={{fontSize:dm?22:18,fontFamily:"var(--ff)",color:"var(--txt)",fontWeight:700}}>{nxt.i} {nxt.n}</div>
+              <div style={{fontSize:19,color:"var(--dim)"}}>{f12(nxt.t)} · {nxt.dl}</div>
             </div>
           </div>
-        ) : <div style={{fontSize:13,color:"var(--dim)",fontStyle:"italic"}}>Conference complete — thank you!</div>}
+        ) : <div style={{fontSize:17,color:"var(--dim)",fontStyle:"italic"}}>Conference complete — thank you!</div>}
       </div>
 
-      <div style={{display:"flex",gap:5,padding:"7px 12px",borderBottom:"1px solid var(--border)",overflowX:"auto"}}>
+      <div style={{display:"flex",gap:5,padding:"12px 20px",borderBottom:"1px solid var(--border)",overflowX:"auto"}}>
         {AGENDA.map(d => (
           <button key={d.day} onClick={() => setDay(d.day)} className={`pill ${d.day===day?"active":""}`} style={{position:"relative"}}>
             Day {d.day}{dm ? ` — ${d.title}` : ""}
@@ -281,9 +303,9 @@ function AgendaTab({dm}) {
         ))}
       </div>
 
-      <div style={{padding:"7px 12px",borderBottom:"1px solid var(--border)"}}>
-        <div style={{fontFamily:"var(--ff)",fontSize:dm?17:14,color:"var(--gold)",fontWeight:700}}>{dd.label}</div>
-        <div style={{fontSize:10,color:"var(--dim)"}}>📍 {dd.loc} · 🎯 {dd.title}</div>
+      <div style={{padding:"12px 20px",borderBottom:"1px solid var(--border)"}}>
+        <div style={{fontFamily:"var(--ff)",fontSize:dm?24:18,color:"var(--gold)",fontWeight:700}}>{dd.label}</div>
+        <div style={{fontSize:18,color:"var(--dim)"}}>📍 {dd.loc} · 🎯 {dd.title}</div>
       </div>
 
       <div style={{maxHeight:dm?"calc(100vh - 360px)":340,overflowY:"auto",padding:"4px 12px 12px"}}>
@@ -299,15 +321,15 @@ function AgendaTab({dm}) {
               </div>
               <div style={{flex:1,background:isA?"rgba(255,107,74,0.08)":"transparent",border:isA?"1px solid rgba(255,107,74,0.25)":"1px solid transparent",borderRadius:9,padding:isA?9:"2px 0"}}>
                 <div style={{display:"flex",alignItems:"center",gap:5}}>
-                  <span style={{fontSize:11,color:isA?"var(--red)":isP?"var(--mute)":"var(--goldDim)",fontWeight:600}}>{f12(ev.t)}</span>
-                  {isA && <span style={{fontSize:8,padding:"1px 5px",borderRadius:7,background:"var(--red)",color:"#fff",fontWeight:700,letterSpacing:1,animation:"pulse 2s infinite"}}>LIVE</span>}
+                  <span style={{fontSize:19,color:isA?"var(--red)":isP?"var(--mute)":"var(--goldDim)",fontWeight:600}}>{f12(ev.t)}</span>
+                  {isA && <span style={{fontSize:12,padding:"1px 5px",borderRadius:7,background:"var(--red)",color:"#fff",fontWeight:700,letterSpacing:1,animation:"pulse 2s infinite"}}>LIVE</span>}
                 </div>
-                <div style={{fontSize:dm?14:12,fontFamily:"var(--ff)",color:isP?"var(--mute)":"var(--txt)",fontWeight:isA?700:600,marginTop:2}}>{ev.i} {ev.n}</div>
-                {ev.d && <div style={{fontSize:10,color:isA?"var(--dim)":"var(--mute)",marginTop:1}}>{ev.d}</div>}
-                <div style={{display:"flex",gap:3,marginTop:4,flexWrap:"wrap"}}>
+                <div style={{fontSize:dm?20:17,fontFamily:"var(--ff)",color:isP?"var(--mute)":"var(--txt)",fontWeight:isA?700:600,marginTop:2}}>{ev.i} {ev.n}</div>
+                {ev.d && <div style={{fontSize:18,color:isA?"var(--dim)":"var(--mute)",marginTop:1}}>{ev.d}</div>}
+                <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
                   {EJ.map(em => {
                     const cnt = (rx[ek] && rx[ek][em]) || 0;
-                    return <button key={em} onClick={() => react(ek,em)} className={`emoji-btn ${cnt>0?"has":""}`}>{em}{cnt>0 && <span style={{fontSize:9,fontWeight:600,color:"var(--gold)"}}>{cnt}</span>}</button>;
+                    return <button key={em} onClick={() => react(ek,em)} className={`emoji-btn ${cnt>0?"has":""}`}>{em}{cnt>0 && <span style={{fontSize:17,fontWeight:600,color:"var(--gold)"}}>{cnt}</span>}</button>;
                   })}
                 </div>
               </div>
@@ -338,7 +360,7 @@ function QTab({dm}) {
   return (
     <div>
       {!dm && (
-        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+        <div style={{padding:20,borderBottom:"1px solid var(--border)"}}>
           <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name (optional)" className="field" style={{maxWidth:200,marginBottom:7,display:"block"}} />
           <div style={{display:"flex",gap:7}}>
             <textarea value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Ask a question..." rows={2} className="field" style={{flex:1,resize:"none"}}
@@ -347,23 +369,23 @@ function QTab({dm}) {
           </div>
         </div>
       )}
-      <div style={{display:"flex",gap:4,padding:"6px 12px"}}>
+      <div style={{display:"flex",gap:8,padding:"10px 20px"}}>
         <button className={`pill ${sort==="votes"?"active":""}`} onClick={()=>setSort("votes")}>Top</button>
         <button className={`pill ${sort==="recent"?"active":""}`} onClick={()=>setSort("recent")}>New</button>
       </div>
       <div style={{maxHeight:dm?"calc(100vh - 260px)":360,overflowY:"auto"}}>
         {sorted.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No questions yet — be the first!</p>}
         {sorted.map(it => (
-          <div key={it._key} className="card-hover" style={{padding:"9px 12px",borderBottom:"1px solid var(--border)",display:"flex",gap:10}}>
+          <div key={it._key} className="card-hover" style={{padding:"14px 20px",borderBottom:"1px solid var(--border)",display:"flex",gap:10}}>
             <button onClick={() => up(it._key, it.votes)} style={{display:"flex",flexDirection:"column",alignItems:"center",background:"none",border:"1px solid var(--border)",borderRadius:7,padding:"5px 7px",color:"var(--dim)",minWidth:38,cursor:"pointer",transition:"all .2s"}}
               onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.color="var(--gold)";}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.color="var(--dim)";}}>
               <span style={{fontSize:14}}>👍</span>
-              <span style={{fontSize:11,fontWeight:600}}>{it.votes||0}</span>
+              <span style={{fontSize:19,fontWeight:600}}>{it.votes||0}</span>
             </button>
             <div style={{flex:1}}>
-              <p style={{color:"var(--txt)",fontSize:dm?15:13,lineHeight:1.5}}>{it.text}</p>
-              <div style={{marginTop:3,fontSize:10,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
+              <p style={{color:"var(--txt)",fontSize:dm?22:18,lineHeight:1.5}}>{it.text}</p>
+              <div style={{marginTop:3,fontSize:18,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
             </div>
           </div>
         ))}
@@ -387,7 +409,7 @@ function CTab({dm}) {
   return (
     <div>
       {!dm && (
-        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+        <div style={{padding:20,borderBottom:"1px solid var(--border)"}}>
           <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name (optional)" className="field" style={{maxWidth:200,marginBottom:7,display:"block"}} />
           <div style={{display:"flex",gap:7}}>
             <input value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Drop a shoutout..." className="field" style={{flex:1}} onKeyDown={e=>{if(e.key==="Enter")sub();}} />
@@ -398,9 +420,9 @@ function CTab({dm}) {
       <div style={{maxHeight:dm?"calc(100vh - 200px)":380,overflowY:"auto"}}>
         {items.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No shoutouts yet!</p>}
         {items.map(it => (
-          <div key={it._key} className="card-hover" style={{padding:"9px 12px",borderBottom:"1px solid var(--border)"}}>
-            <p style={{color:"var(--txt)",fontSize:dm?15:13,lineHeight:1.5}}>{it.text}</p>
-            <div style={{marginTop:3,fontSize:10,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
+          <div key={it._key} className="card-hover" style={{padding:"14px 20px",borderBottom:"1px solid var(--border)"}}>
+            <p style={{color:"var(--txt)",fontSize:dm?22:18,lineHeight:1.5}}>{it.text}</p>
+            <div style={{marginTop:3,fontSize:18,color:"var(--mute)"}}><span style={{color:"var(--goldDim)",fontWeight:500}}>{it.name}</span> · {ago(it.ts)}</div>
           </div>
         ))}
       </div>
@@ -430,7 +452,7 @@ function PTab({dm}) {
   return (
     <div>
       {!dm && (
-        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+        <div style={{padding:20,borderBottom:"1px solid var(--border)"}}>
           <div style={{display:"flex",gap:6,marginBottom:7,flexWrap:"wrap"}}>
             <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name" className="field" style={{width:140,flex:"none"}} />
             <input value={cap} onChange={e=>setCap(e.target.value)} placeholder="Caption" className="field" style={{flex:1,minWidth:100}} />
@@ -448,8 +470,8 @@ function PTab({dm}) {
             onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
             <img src={p.data} alt="" style={{width:"100%",aspectRatio:"1",objectFit:"cover",display:"block"}} />
             <div style={{padding:"5px 7px"}}>
-              {p.caption && <div style={{fontSize:11,color:"var(--txt)"}}>{p.caption}</div>}
-              <div style={{fontSize:9,color:"var(--mute)"}}><span style={{color:"var(--goldDim)"}}>{p.name}</span> · {ago(p.ts)}</div>
+              {p.caption && <div style={{fontSize:19,color:"var(--txt)"}}>{p.caption}</div>}
+              <div style={{fontSize:17,color:"var(--mute)"}}><span style={{color:"var(--goldDim)"}}>{p.name}</span> · {ago(p.ts)}</div>
             </div>
           </div>
         ))}
@@ -458,7 +480,7 @@ function PTab({dm}) {
         <div className="overlay" onClick={() => setVp(null)}>
           <div onClick={e=>e.stopPropagation()} style={{maxWidth:"90vw",textAlign:"center"}}>
             <img src={vp.data} alt="" style={{maxWidth:"100%",maxHeight:"78vh",borderRadius:12}} />
-            <div style={{marginTop:8,color:"var(--txt)"}}>{vp.caption && <p>{vp.caption}</p>}<p style={{fontSize:12,color:"var(--dim)",margin:"2px 0 0"}}>{vp.name} · {ago(vp.ts)}</p></div>
+            <div style={{marginTop:8,color:"var(--txt)"}}>{vp.caption && <p>{vp.caption}</p>}<p style={{fontSize:16,color:"var(--dim)",margin:"2px 0 0"}}>{vp.name} · {ago(vp.ts)}</p></div>
             <button onClick={() => setVp(null)} className="btn-gold" style={{marginTop:10}}>Close</button>
           </div>
         </div>
@@ -490,10 +512,10 @@ function PoTab({dm, admin}) {
   return (
     <div style={{maxHeight:dm?"calc(100vh - 200px)":440,overflowY:"auto"}}>
       {admin && (
-        <div style={{padding:12,borderBottom:"1px solid var(--border)",background:"var(--card)"}}>
-          <div style={{fontSize:9,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Create Poll (Admin)</div>
+        <div style={{padding:20,borderBottom:"1px solid var(--border)",background:"var(--card)"}}>
+          <div style={{fontSize:17,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Create Poll (Admin)</div>
           <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Question..." className="field" style={{marginBottom:6}} />
-          {opts.map((o,i) => <input key={i} value={o} onChange={e=>{const n=[...opts];n[i]=e.target.value;setOpts(n);}} placeholder={`Option ${i+1}`} className="field" style={{marginBottom:3,fontSize:12,padding:7}} />)}
+          {opts.map((o,i) => <input key={i} value={o} onChange={e=>{const n=[...opts];n[i]=e.target.value;setOpts(n);}} placeholder={`Option ${i+1}`} className="field" style={{marginBottom:3,fontSize:16,padding:7}} />)}
           <div style={{display:"flex",gap:6,marginTop:6}}>
             <button onClick={() => setOpts([...opts,""])} className="btn-sm">+ Option</button>
             <button onClick={create} className="btn-gold" style={{padding:"5px 14px",fontSize:12}}>Create</button>
@@ -504,11 +526,11 @@ function PoTab({dm, admin}) {
       {[...act,...cls].map(p => {
         const total = p.opts.reduce((s,o) => s+o.v, 0);
         return (
-          <div key={p._key} style={{padding:12,borderBottom:"1px solid var(--border)",opacity:p.on?1:.5}}>
+          <div key={p._key} style={{padding:20,borderBottom:"1px solid var(--border)",opacity:p.on?1:.5}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6}}>
-              <div style={{fontSize:dm?15:13,fontFamily:"var(--ff)",fontWeight:700}}>{p.q}</div>
+              <div style={{fontSize:dm?22:18,fontFamily:"var(--ff)",fontWeight:700}}>{p.q}</div>
               <div style={{display:"flex",gap:4,alignItems:"center"}}>
-                {p.on && <span style={{fontSize:8,padding:"1px 5px",borderRadius:6,background:"var(--red)",color:"#fff",fontWeight:700}}>LIVE</span>}
+                {p.on && <span style={{fontSize:12,padding:"1px 5px",borderRadius:6,background:"var(--red)",color:"#fff",fontWeight:700}}>LIVE</span>}
                 {admin && <button onClick={() => toggle(p._key, p.on)} className="btn-sm">{p.on?"Close":"Open"}</button>}
               </div>
             </div>
@@ -519,14 +541,14 @@ function PoTab({dm, admin}) {
                   <button key={i} onClick={() => p.on && vote(p._key, p.opts, i)} disabled={!p.on}
                     style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",background:"var(--input)",border:"1px solid var(--border)",borderRadius:8,cursor:p.on?"pointer":"default",position:"relative",overflow:"hidden",textAlign:"left"}}>
                     <div style={{position:"absolute",left:0,top:0,bottom:0,width:`${pct}%`,background:"var(--glow)",transition:"width .5s",borderRadius:8}} />
-                    <span style={{position:"relative",flex:1,fontSize:12,fontWeight:500,color:"var(--txt)"}}>{o.t}</span>
-                    <span style={{position:"relative",fontSize:11,color:"var(--gold)",fontWeight:700}}>{pct}%</span>
-                    <span style={{position:"relative",fontSize:9,color:"var(--mute)"}}>{o.v}</span>
+                    <span style={{position:"relative",flex:1,fontSize:16,fontWeight:500,color:"var(--txt)"}}>{o.t}</span>
+                    <span style={{position:"relative",fontSize:19,color:"var(--gold)",fontWeight:700}}>{pct}%</span>
+                    <span style={{position:"relative",fontSize:17,color:"var(--mute)"}}>{o.v}</span>
                   </button>
                 );
               })}
             </div>
-            <div style={{marginTop:4,fontSize:9,color:"var(--mute)"}}>{total} vote{total!==1?"s":""}</div>
+            <div style={{marginTop:4,fontSize:17,color:"var(--mute)"}}>{total} vote{total!==1?"s":""}</div>
           </div>
         );
       })}
@@ -551,12 +573,12 @@ function TkTab({dm}) {
 
   return (
     <div>
-      <div style={{display:"flex",gap:4,padding:"8px 12px",borderBottom:"1px solid var(--border)",alignItems:"center"}}>
-        <span style={{fontSize:10,color:"var(--mute)"}}>Day:</span>
+      <div style={{display:"flex",gap:4,padding:"14px 20px",borderBottom:"1px solid var(--border)",alignItems:"center"}}>
+        <span style={{fontSize:18,color:"var(--mute)"}}>Day:</span>
         {pills.map(d => <button key={d.v} onClick={() => setDay(d.v)} className={`pill ${day===d.v?"active":""}`}>{d.l}</button>)}
       </div>
       {!dm && (
-        <div style={{padding:12,borderBottom:"1px solid var(--border)"}}>
+        <div style={{padding:20,borderBottom:"1px solid var(--border)"}}>
           <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Name (optional)" className="field" style={{maxWidth:200,marginBottom:7,display:"block"}} />
           <div style={{display:"flex",gap:7}}>
             <input value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Share your key takeaway..." className="field" style={{flex:1}} onKeyDown={e=>{if(e.key==="Enter")sub();}} />
@@ -567,13 +589,13 @@ function TkTab({dm}) {
       <div style={{maxHeight:dm?"calc(100vh - 260px)":340,overflowY:"auto"}}>
         {filtered.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No takeaways yet</p>}
         {[...filtered].sort((a,b) => b.ts-a.ts).map(it => (
-          <div key={it._key} style={{padding:"10px 12px",borderBottom:"1px solid var(--border)"}}>
+          <div key={it._key} style={{padding:"16px 20px",borderBottom:"1px solid var(--border)"}}>
             <div style={{display:"flex",gap:6,alignItems:"center"}}>
-              {it.day>0 && <span style={{fontSize:9,padding:"1px 7px",borderRadius:8,background:"var(--glow)",border:"1px solid var(--border)",color:"var(--gold)",fontWeight:600}}>Day {it.day}</span>}
-              <span style={{fontSize:10,color:"var(--goldDim)",fontWeight:500}}>{it.name}</span>
-              <span style={{fontSize:9,color:"var(--mute)"}}>{ago(it.ts)}</span>
+              {it.day>0 && <span style={{fontSize:17,padding:"1px 7px",borderRadius:8,background:"var(--glow)",border:"1px solid var(--border)",color:"var(--gold)",fontWeight:600}}>Day {it.day}</span>}
+              <span style={{fontSize:18,color:"var(--goldDim)",fontWeight:500}}>{it.name}</span>
+              <span style={{fontSize:17,color:"var(--mute)"}}>{ago(it.ts)}</span>
             </div>
-            <p style={{margin:"3px 0 0",fontSize:13,lineHeight:1.5}}>💡 {it.text}</p>
+            <p style={{margin:"3px 0 0",fontSize:17,lineHeight:1.5}}>💡 {it.text}</p>
           </div>
         ))}
       </div>
@@ -591,8 +613,8 @@ function ExportTab({dm}) {
   const tk = toArr(useFirebase("takeaways"));
 
   const topQ = [...q].sort((a,b) => (b.votes||0)-(a.votes||0)).slice(0,10);
-  const hs = {fontFamily:"var(--ff)",fontSize:15,color:"var(--gold)",fontWeight:700,marginBottom:6,borderBottom:"1px solid var(--border)",paddingBottom:4};
-  const ts = {fontSize:13,lineHeight:1.6};
+  const hs = {fontFamily:"var(--ff)",fontSize:19,color:"var(--gold)",fontWeight:700,marginBottom:6,borderBottom:"1px solid var(--border)",paddingBottom:4};
+  const ts = {fontSize:17,lineHeight:1.6};
 
   const rxSum = [];
   AGENDA.forEach(day => day.ev.forEach((ev,i) => {
@@ -602,8 +624,8 @@ function ExportTab({dm}) {
   rxSum.sort((a,b) => b.total - a.total);
 
   return (
-    <div style={{padding:16,maxHeight:dm?"calc(100vh - 180px)":500,overflowY:"auto"}}>
-      <h2 style={{fontFamily:"var(--ff)",fontSize:20,color:"var(--gold)",fontWeight:800,margin:"0 0 16px"}}>📊 LC26 Summary</h2>
+    <div style={{padding:20,maxHeight:dm?"calc(100vh - 180px)":500,overflowY:"auto"}}>
+      <h2 style={{fontFamily:"var(--ff)",fontSize:28,color:"var(--gold)",fontWeight:800,margin:"0 0 16px"}}>📊 LC26 Summary</h2>
       <div style={{marginBottom:20}}><div style={hs}>Overview</div><div style={ts}>{q.length} questions · {c.length} shoutouts · {ph.length} photos · {po.length} polls · {tk.length} takeaways</div></div>
       <div style={{marginBottom:20}}><div style={hs}>Top Questions</div>
         {topQ.length===0 ? <div style={ts}>None</div> : topQ.map((q,i) => <div key={q._key} style={{...ts,padding:"2px 0"}}>{i+1}. {q.text} <span style={{color:"var(--gold)"}}>({q.votes} votes)</span> — {q.name}</div>)}
@@ -642,10 +664,10 @@ function AdminModal({onClose}) {
     <div className="overlay" onClick={onClose}>
       <div className="modal" onClick={e=>e.stopPropagation()}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
-          <h2 style={{fontFamily:"var(--ff)",fontSize:17,color:"var(--gold)",fontWeight:700}}>⚙️ Admin</h2>
+          <h2 style={{fontFamily:"var(--ff)",fontSize:22,color:"var(--gold)",fontWeight:700}}>⚙️ Admin</h2>
           <button onClick={onClose} style={{background:"none",border:"none",color:"var(--dim)",fontSize:17,cursor:"pointer"}}>✕</button>
         </div>
-        <div style={{fontSize:9,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Post Announcement</div>
+        <div style={{fontSize:17,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Post Announcement</div>
         <div style={{display:"flex",gap:6}}>
           <input value={txt} onChange={e=>setTxt(e.target.value)} placeholder="Type announcement..." className="field" onKeyDown={e=>{if(e.key==="Enter")post();}} />
           <button onClick={post} className="btn-gold" style={{fontSize:12}}>Send</button>
@@ -664,21 +686,21 @@ function AdminModal({onClose}) {
 // ─── WELCOME ───
 function Welcome({onEnter}) {
   return (
-    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 20px",textAlign:"center",minHeight:"100vh"}}>
-      <div style={{fontSize:10,letterSpacing:4,textTransform:"uppercase",color:"var(--goldDim)",fontWeight:600,marginBottom:10}}>Century Golf Partners</div>
-      <h1 style={{fontFamily:"var(--ff)",fontWeight:800,fontSize:28,color:"var(--gold)",lineHeight:1.1,marginBottom:5}}>LC26 Live Wall</h1>
-      <p style={{fontFamily:"var(--ff)",fontStyle:"italic",fontSize:14,color:"var(--dim)",marginBottom:18}}>Back to the Basics — Past · Present · People</p>
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"48px 24px",textAlign:"center",minHeight:"100vh",background:`radial-gradient(ellipse at 50% 30%, #1a2e1f 0%, var(--bg) 70%)`}}>
+      <div style={{fontSize:16,letterSpacing:6,textTransform:"uppercase",color:"var(--goldDim)",fontWeight:600,marginBottom:16}}>Century Golf Partners</div>
+      <h1 style={{fontFamily:"var(--ff)",fontWeight:800,fontSize:52,color:"var(--gold)",lineHeight:1.1,marginBottom:8,textShadow:"0 2px 40px rgba(201,165,78,.2)"}}>LC26 Live Wall</h1>
+      <p style={{fontFamily:"var(--ff)",fontStyle:"italic",fontSize:22,color:"var(--dim)",marginBottom:28}}>Back to the Basics — Past · Present · People</p>
       {CONF_START > Date.now() && <Countdown />}
-      <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:14,padding:20,marginBottom:18}}>
-        <QRCode />
+      <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:20,padding:28,marginBottom:28,boxShadow:"0 20px 60px rgba(0,0,0,.4)"}}>
+        <QRCode size={220} />
       </div>
-      <div style={{display:"flex",gap:5,flexWrap:"wrap",justifyContent:"center",marginBottom:18}}>
+      <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:28}}>
         {["📋 Agenda","💬 Q&A","🎉 Shoutouts","📸 Photos","📊 Polls","💡 Takeaways"].map(x => (
-          <span key={x} style={{padding:"4px 11px",borderRadius:14,background:"var(--glow)",border:"1px solid var(--border)",fontSize:11}}>{x}</span>
+          <span key={x} style={{padding:"8px 18px",borderRadius:20,background:"var(--glow)",border:"1px solid var(--border)",fontSize:16,fontWeight:500}}>{x}</span>
         ))}
       </div>
-      <button onClick={onEnter} className="btn-gold" style={{padding:"12px 32px",fontSize:15}}>Enter the Wall →</button>
-      <p style={{marginTop:24,fontSize:10,color:"var(--mute)"}}>April 27–30, 2026 · Dallas, TX</p>
+      <button onClick={onEnter} className="btn-gold" style={{padding:"18px 48px",fontSize:22,borderRadius:14}}>Enter the Wall →</button>
+      <p style={{marginTop:32,fontSize:15,color:"var(--mute)",letterSpacing:2}}>April 27–30, 2026 · Dallas, TX</p>
     </div>
   );
 }
@@ -724,12 +746,12 @@ function App() {
   return (
     <div className={dm?"dm":""}>
       {/* Header */}
-      <div style={{padding:"8px 12px",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center",background:"var(--card)",flexWrap:"wrap",gap:4}}>
-        <div style={{display:"flex",alignItems:"baseline",gap:7}}>
-          <h1 style={{fontFamily:"var(--ff)",fontWeight:700,fontSize:dm?20:15,color:"var(--gold)"}}> LC26 Live Wall</h1>
-          <span style={{fontSize:9,color:"var(--mute)",letterSpacing:2,textTransform:"uppercase"}}>CGP</span>
+      <div style={{padding:"16px 24px",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center",background:"var(--card)",flexWrap:"wrap",gap:8}}>
+        <div style={{display:"flex",alignItems:"baseline",gap:10}}>
+          <h1 style={{fontFamily:"var(--ff)",fontWeight:700,fontSize:dm?32:24,color:"var(--gold)"}}> LC26 Live Wall</h1>
+          <span style={{fontSize:13,color:"var(--mute)",letterSpacing:3,textTransform:"uppercase"}}>CGP</span>
         </div>
-        <div style={{display:"flex",gap:4,alignItems:"center",flexWrap:"wrap"}}>
+        <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
           <button onClick={() => setScr("welcome")} className="btn-sm">QR</button>
           <button onClick={() => setDm(!dm)} className={`btn-sm ${dm?"active":""}`}>{dm?"✦ Display":"Display"}</button>
           {admin ? (<>
@@ -770,7 +792,7 @@ function App() {
       {showPin && (
         <div className="overlay" onClick={() => {setShowPin(false);setPin("");}}>
           <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:260,textAlign:"center"}}>
-            <div style={{fontFamily:"var(--ff)",fontSize:15,color:"var(--gold)",fontWeight:700,marginBottom:12}}>Admin Access</div>
+            <div style={{fontFamily:"var(--ff)",fontSize:19,color:"var(--gold)",fontWeight:700,marginBottom:12}}>Admin Access</div>
             <input value={pin} onChange={e=>setPin(e.target.value)} type="password" maxLength={4} placeholder="PIN"
               className="field" style={{width:100,fontSize:22,textAlign:"center",letterSpacing:6,display:"inline-block"}}
               onKeyDown={e=>{if(e.key==="Enter")tryPin();}} autoFocus />
