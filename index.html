@@ -157,6 +157,74 @@ const AGENDA = [
       {t:"18:30",e:"21:00",n:"Dinner",d:"Oak'd BBQ",i:"🍖"}]}
 ];
 
+// ─── WORKSHOP CASES ───
+const TEAMS = [
+  { id: "A", name: "Team A", case: "flow" },
+  { id: "B", name: "Team B", case: "flex" },
+  { id: "C", name: "Team C", case: "flow" },
+  { id: "D", name: "Team D", case: "flex" },
+];
+
+const CASES = {
+  flow: {
+    title: "Public Club — 'Flow' Case",
+    subtitle: "March 2026 MOS · Southeast Daily Fee Club",
+    context: "This is the March 2026 MOS for a daily fee club in the Southeast. The club has a few members, but they are more of an annual passholder style and do not have charging privileges. The club had a great month on the revenue side — but, did they manage the bottom line well enough to flow through to their potential? Dig into the performance and answer the questions below.",
+    keyStats: [
+      { label: "Total Rounds", actual: "5,834", budget: "5,600", delta: "+4.2%" },
+      { label: "Occupancy", actual: "86.7%", budget: "82.4%", delta: "+5.3%" },
+      { label: "Total Revenue", actual: "$446,122", budget: "$389,062", delta: "+14.7%" },
+      { label: "F&B Revenue", actual: "$64,144", budget: "$53,211", delta: "+20.5%" },
+      { label: "  F&B Non-event", actual: "$23,675", budget: "$31,256", delta: "-24.3%" },
+      { label: "  F&B Banquet", actual: "$40,469", budget: "$21,955", delta: "+84.3%" },
+      { label: "F&B COS %", actual: "39.7%", budget: "38.9%", delta: "+0.8pt" },
+      { label: "Cart Fees", actual: "$165,895", budget: "$143,985", delta: "+15.2%" },
+      { label: "Golf Shop Merch Rev", actual: "$33,389", budget: "$29,170", delta: "+14.5%" },
+      { label: "Golf Shop Merch COS", actual: "$20,787 (62.3%)", budget: "45-55% target", delta: "Over target" },
+      { label: "Golf Shop Payroll", actual: "$31,897", budget: "$22,460", delta: "+42.0%" },
+      { label: "Cart Dept Payroll", actual: "$8,234", budget: "$5,793", delta: "+42.1%" },
+      { label: "Total Payroll", actual: "$116,937", budget: "$101,247", delta: "+15.5%" },
+      { label: "NOI Before Fees", actual: "$212,649", budget: "—", delta: "—" },
+      { label: "Non-controllable Exp", actual: "$31,127", budget: "—", delta: "—" },
+      { label: "Management Fee", actual: "$11,672", budget: "—", delta: "—" },
+      { label: "Net Cash Flow", actual: "$169,850 (38.1%)", budget: "—", delta: "—" },
+    ],
+    questions: [
+      { title: "Golf Shop Payroll & Staffing Structure", text: "Golf Shop Payroll ran $31,897 vs. a $22,460 budget — 42% over plan — while total Golf revenues beat budget by only 14%. If revenue per labor dollar is declining, should the shop restructure staffing (fewer full-time, more part-time/seasonal) or tie commission-based pay to merchandise margin rather than top-line sales?" },
+      { title: "Merchandise Cost of Sales & Gross Margin", text: "Merchandise Cost of Sales is 62.3% of Golf Shop Merch revenue ($20,787 COGS on $33,389 sales), leaving only a 37.7% gross margin. Industry targets for pro-shop merchandise are typically 45–55% margin. What pricing, vendor negotiation, or inventory-mix changes would bring Merch COS below 50% and add ~$4,000+ to the bottom line each month?" },
+      { title: "F&B Cost of Sales & Revenue Mix", text: "F&B Cost of Sales is 39.7% of F&B revenue — near the high end for a club operation. Meanwhile, F&B Member Revenues dropped to $23,675 (actual) vs. a $31,256 budget, suggesting lower covers or average check. Would a menu re-engineering (fewer low-margin items, higher-margin specials) combined with a minimum-spend program for members improve both top-line F&B revenue and pull COS% closer to the 30–35% target?" },
+      { title: "Total Payroll Efficiency & Incremental Return on Labor", text: "Total Payroll is $116,937 (26.2% of revenue), $15,690 over the $101,247 budget. The largest overages are in Golf Shop (+$9,437) and Cart Dept (+$2,441). Given that revenue exceeded budget by ~$57K, is the incremental payroll generating sufficient return — i.e., does each additional dollar of labor produce more than a dollar of incremental contribution — or are these departments over-staffed relative to the volume they're actually handling?" },
+      { title: "Cash Flow Breakeven Analysis", text: "Net Cash Flow after non-controllable expenses is $169,850 (38.1% of revenue). Non-controllable expenses total $31,127. If NOI before fees is $212,649, what is the realistic cash flow breakeven point for this club — i.e., what minimum monthly revenue level is needed to cover all fixed costs (non-controllable + management fee = ~$42,800) and still generate positive free cash flow to fund capital reserves and debt service?" }
+    ]
+  },
+  flex: {
+    title: "Public Club — 'Flex' Case",
+    subtitle: "March 2026 MOS · Southeast Daily Fee Club",
+    context: "This is the March 2026 MOS for a daily fee club in the Southeast. The club has a few members, but they are more of an annual passholder style and do not have charging privileges. The club had a poor month on the revenue side — but, did they do enough on the expenses side to mitigate the damage? Dig into the performance, find some reasons for potential revenue issues and answer the questions below.",
+    keyStats: [
+      { label: "Total Rounds", actual: "5,067", budget: "5,800 (fcst)", delta: "-12.6%" },
+      { label: "Occupancy", actual: "82.6%", budget: "93.5% (fcst)", delta: "-11.7%" },
+      { label: "Total Golf Revenue", actual: "$310,159", budget: "$322,760 (fcst)", delta: "-3.9%" },
+      { label: "Revenue per Round", actual: "$61.21", budget: "$55.65 (fcst)", delta: "+10.0%" },
+      { label: "Tournament Income", actual: "$10,000", budget: "$15,000 (fcst)", delta: "-33.3%" },
+      { label: "F&B Revenue", actual: "$51,315", budget: "$53,211", delta: "-3.6%" },
+      { label: "  F&B Non-event", actual: "$18,940", budget: "$28,200 (fcst)", delta: "-32.8%" },
+      { label: "  F&B Banquet", actual: "$32,375", budget: "$32,750 (fcst)", delta: "-1.1%" },
+      { label: "F&B Payroll", actual: "$9,967", budget: "$9,500 (fcst)", delta: "+4.9%" },
+      { label: "F&B COS %", actual: "31.6%", budget: "38.9%", delta: "-7.3pt ✓" },
+      { label: "F&B Net", actual: "$15,878", budget: "$20,948 (fcst)", delta: "-24.2%" },
+      { label: "Cart Fees", actual: "$132,716", budget: "$143,985", delta: "-7.8%" },
+    ],
+    questions: [
+      { title: "F&B Non-event Revenue Collapse & Expense Response", text: "F&B Non-event Revenues fell to $18,940 against a $28,200 forecast — a 32.8% miss ($9,260 shortfall) — while Banquet Revenues hit near-plan at $32,375 vs. $32,750. F&B Payroll still ran $9,967 (4.9% over the $9,500 forecast) despite serving far fewer member covers. With Non-event revenue driving the entire F&B shortfall, should management restructure the member dining operation (fewer scheduled hours, reduced prep staff, minimum-spend requirements) or is the Banquet strength enough to justify holding current F&B staffing levels?" },
+      { title: "Rounds Volume & Revenue-per-Round Dynamics", text: "Total Rounds came in at 5,067 against a 5,800 forecast — a 12.6% shortfall (733 fewer rounds) — yet total Golf Revenues were only 3.9% below forecast ($310,159 vs. $322,760). Revenue per round actually increased from a forecasted $55.65 to $61.21 (10.0% higher). Is the higher per-round yield masking a dangerous volume decline, or does it signal successful yield management (pricing optimization, tee-time management) that should be continued even at the cost of lower utilization?" },
+      { title: "Golf Shop Merch COS & Payroll Economics", text: "Golf Shop Merchandise revenue came in below forecast while payroll remained at planned levels. With fewer rounds driving less shop traffic, should the shop cut hours/staff to match the lower volume, or maintain service levels to preserve per-visit conversion and average ticket? What's the right labor-to-revenue ratio given current traffic?" },
+      { title: "Expense Management Effectiveness — Did They Flex?", text: "On a month where total revenue missed forecast materially, did management successfully flex variable expenses down in proportion? Identify which line items flexed appropriately, which did not, and what the net impact was on the bottom line vs. what it could have been with disciplined expense management." },
+      { title: "Volume Recovery Strategy", text: "With rounds down 12.6% and occupancy at 82.6% vs. a 93.5% forecast, what tactical plan should this club pursue to recover volume without eroding the strong per-round yield? Consider off-peak promotions, tournament outreach, membership conversion opportunities, and competitive positioning." }
+    ]
+  }
+};
+
 // ─── Helpers ───
 const pt = (d,t) => new Date(`${d}T${t}:00-05:00`);
 const f12 = t => { const[h,m]=t.split(":").map(Number); return `${h===0?12:h>12?h-12:h}:${String(m).padStart(2,"0")} ${h>=12?"PM":"AM"}`; };
@@ -735,7 +803,7 @@ function AdminModal({onClose}) {
   };
 
   const resetAll = () => {
-    if (window.confirm("⚠️ RESET EVERYTHING?\n\nThis will delete ALL questions, shoutouts, photos, polls, takeaways, reactions, and announcements.\n\nThis cannot be undone.")) {
+    if (window.confirm("⚠️ RESET EVERYTHING?\n\nThis will delete ALL questions, shoutouts, photos, polls, takeaways, reactions, announcements, and workshop responses.\n\nThis cannot be undone.")) {
       fbRemove("questions");
       fbRemove("comments");
       fbRemove("photos");
@@ -743,11 +811,13 @@ function AdminModal({onClose}) {
       fbRemove("reactions");
       fbRemove("takeaways");
       fbRemove("announcements");
+      fbRemove("workshop_responses");
       // Clear localStorage voting history too
       try {
         localStorage.removeItem("lc26_voted");
         localStorage.removeItem("lc26_reacted");
         localStorage.removeItem("lc26_pollvotes");
+        localStorage.removeItem("lc26_team");
       } catch {}
       setConfirmReset(false);
       alert("All data has been reset.");
@@ -759,8 +829,9 @@ function AdminModal({onClose}) {
       localStorage.removeItem("lc26_voted");
       localStorage.removeItem("lc26_reacted");
       localStorage.removeItem("lc26_pollvotes");
+      localStorage.removeItem("lc26_team");
     } catch {}
-    alert("Your local vote history has been cleared. Refresh the page to see the effect.");
+    alert("Your local history has been cleared. Refresh the page to see the effect.");
   };
 
   return (
@@ -797,6 +868,7 @@ function AdminModal({onClose}) {
             {path:"polls",label:"Polls"},
             {path:"reactions",label:"Reactions"},
             {path:"takeaways",label:"Takeaways"},
+            {path:"workshop_responses",label:"Workshop"},
             {path:"announcements",label:"Announcements"},
           ].map(s => (
             <button key={s.path} onClick={() => resetSection(s.path, s.label)} className="btn-sm" style={{color:"var(--red)",borderColor:"var(--red)",padding:"6px 12px",fontSize:13}}>
@@ -823,6 +895,280 @@ function AdminModal({onClose}) {
   );
 }
 
+// ─── WORKSHOP TAB ───
+function WorkshopTab({dm, admin}) {
+  const responsesRaw = useFirebase("workshop_responses");
+  const responses = responsesRaw || {};
+
+  const [teamId, setTeamId] = useState(() => {
+    try { return localStorage.getItem("lc26_team") || ""; } catch { return ""; }
+  });
+  const [localAnswers, setLocalAnswers] = useState({});
+  const [showChangeTeam, setShowChangeTeam] = useState(false);
+
+  // Load existing team response on team select
+  useEffect(() => {
+    if (teamId && responses[teamId]) {
+      const saved = responses[teamId];
+      setLocalAnswers({
+        a1: saved.a1 || "", a2: saved.a2 || "", a3: saved.a3 || "",
+        a4: saved.a4 || "", a5: saved.a5 || ""
+      });
+    }
+  }, [teamId, responsesRaw]);
+
+  const team = TEAMS.find(t => t.id === teamId);
+  const cs = team ? CASES[team.case] : null;
+  const teamResp = teamId ? responses[teamId] : null;
+  const isSubmitted = teamResp?.submitted;
+
+  const pickTeam = (id) => {
+    setTeamId(id);
+    try { localStorage.setItem("lc26_team", id); } catch {}
+    setShowChangeTeam(false);
+  };
+
+  const clearTeam = () => {
+    setTeamId("");
+    setLocalAnswers({});
+    try { localStorage.removeItem("lc26_team"); } catch {}
+  };
+
+  const saveAnswer = (qIdx, text) => {
+    const key = `a${qIdx+1}`;
+    const newAns = {...localAnswers, [key]: text};
+    setLocalAnswers(newAns);
+    // Debounced auto-save
+    fbUpdate(`workshop_responses/${teamId}`, {
+      ...newAns,
+      teamName: team.name,
+      caseId: team.case,
+      lastSaved: Date.now(),
+    });
+  };
+
+  const submit = () => {
+    if (!window.confirm("Submit your team's responses?\n\nYou can still edit and resubmit after this.")) return;
+    fbUpdate(`workshop_responses/${teamId}`, {
+      submitted: true,
+      submittedAt: Date.now(),
+    });
+  };
+
+  const editAgain = () => {
+    if (!window.confirm("Edit your team's response?\n\nYou'll need to resubmit when done.")) return;
+    fbUpdate(`workshop_responses/${teamId}`, { submitted: false });
+  };
+
+  const unlockForEdit = () => {
+    if (!admin) return;
+    if (window.confirm("Unlock this team's response for editing?")) {
+      fbUpdate(`workshop_responses/${teamId}`, { submitted: false });
+    }
+  };
+
+  // ADMIN: Export all responses
+  const exportAll = () => {
+    const lines = [];
+    lines.push("═══════════════════════════════════════════════════════════════");
+    lines.push("  LC26 WORKSHOP — TEAM RESPONSES FOR GRADING");
+    lines.push("═══════════════════════════════════════════════════════════════\n");
+    TEAMS.forEach(t => {
+      const r = responses[t.id];
+      const c = CASES[t.case];
+      lines.push(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+      lines.push(`TEAM: ${t.name}`);
+      lines.push(`CASE: ${c.title}`);
+      lines.push(`STATUS: ${r?.submitted ? "✓ Submitted" : r ? "In Progress" : "Not Started"}`);
+      if (r?.submittedAt) lines.push(`SUBMITTED: ${new Date(r.submittedAt).toLocaleString()}`);
+      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+      c.questions.forEach((q, i) => {
+        lines.push(`QUESTION ${i+1}: ${q.title}`);
+        lines.push(`${q.text}\n`);
+        lines.push(`ANSWER:`);
+        lines.push(`${(r && r[`a${i+1}`]) || "(no response)"}\n`);
+      });
+    });
+    const blob = new Blob([lines.join("\n")], {type:"text/plain"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `lc26-workshop-responses-${new Date().toISOString().slice(0,10)}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // ── No team selected: show picker ──
+  if (!teamId || showChangeTeam) {
+    return (
+      <div style={{padding:"24px 20px",maxHeight:dm?"calc(100vh - 180px)":"auto",overflowY:"auto"}}>
+        {admin && (
+          <div style={{marginBottom:24,padding:16,background:"var(--card)",border:"1px solid var(--border)",borderRadius:12}}>
+            <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Admin — Team Status</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}>
+              {TEAMS.map(t => {
+                const r = responses[t.id];
+                const done = r?.submitted;
+                const started = r && Object.keys(r).some(k=>k.startsWith("a") && r[k]?.trim());
+                let count = 0;
+                if (r) for (let i=1;i<=5;i++) if (r[`a${i}`]?.trim()) count++;
+                return (
+                  <div key={t.id} style={{padding:10,background:"var(--input)",borderRadius:8,border:`1px solid ${done?"var(--gold)":started?"var(--goldDim)":"var(--border)"}`}}>
+                    <div style={{fontFamily:"var(--ff)",fontSize:15,fontWeight:700,color:"var(--gold)"}}>{t.name}</div>
+                    <div style={{fontSize:12,color:"var(--dim)"}}>{CASES[t.case].title.replace("Public Club — ","")}</div>
+                    <div style={{fontSize:12,color:done?"var(--gold)":"var(--dim)",marginTop:4,fontWeight:600}}>
+                      {done ? "✓ Submitted" : `${count}/5 answered`}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <button onClick={exportAll} className="btn-gold" style={{fontSize:14}}>📊 Export All for Grading</button>
+          </div>
+        )}
+        <div style={{textAlign:"center",padding:"24px 16px"}}>
+          <div style={{fontSize:40,marginBottom:12}}>🎓</div>
+          <h2 style={{fontFamily:"var(--ff)",fontSize:26,color:"var(--gold)",fontWeight:700,marginBottom:8}}>Case Workshop</h2>
+          <p style={{fontSize:16,color:"var(--dim)",marginBottom:24,maxWidth:480,margin:"0 auto 24px"}}>
+            Select your team to view your assigned case study and submit responses.
+          </p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:10,maxWidth:520,margin:"0 auto"}}>
+            {TEAMS.map(t => {
+              const r = responses[t.id];
+              const done = r?.submitted;
+              return (
+                <button key={t.id} onClick={() => pickTeam(t.id)}
+                  style={{padding:"16px 20px",background:done?"rgba(201,165,78,0.1)":"var(--card)",
+                    border:`2px solid ${done?"var(--goldDim)":"var(--border)"}`,
+                    borderRadius:12,cursor:"pointer",textAlign:"left",transition:"all .2s"}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.transform="translateY(-2px)";}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor=done?"var(--goldDim)":"var(--border)";e.currentTarget.style.transform="translateY(0)";}}>
+                  <div style={{fontFamily:"var(--ff)",fontSize:20,fontWeight:700,color:"var(--gold)"}}>{t.name}</div>
+                  <div style={{fontSize:13,color:"var(--dim)",marginTop:4}}>{CASES[t.case].title.split("—")[1].trim()}</div>
+                  {done && <div style={{fontSize:12,color:"var(--gold)",marginTop:6,fontWeight:600}}>✓ Submitted</div>}
+                </button>
+              );
+            })}
+          </div>
+          {showChangeTeam && (
+            <button onClick={() => setShowChangeTeam(false)} className="btn-sm" style={{marginTop:20}}>Cancel</button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Team selected: show case + response form ──
+  return (
+    <div style={{maxHeight:dm?"calc(100vh - 180px)":"auto",overflowY:"auto"}}>
+      {/* Team header */}
+      <div style={{padding:"14px 20px",borderBottom:"1px solid var(--border)",background:"var(--card)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+        <div>
+          <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1}}>Current Team</div>
+          <div style={{fontFamily:"var(--ff)",fontSize:22,color:"var(--gold)",fontWeight:700}}>{team.name}</div>
+        </div>
+        <div style={{display:"flex",gap:6,alignItems:"center"}}>
+          {isSubmitted && <span style={{padding:"4px 10px",background:"var(--glow)",border:"1px solid var(--gold)",borderRadius:8,color:"var(--gold)",fontSize:13,fontWeight:600}}>✓ Submitted</span>}
+          <button onClick={() => setShowChangeTeam(true)} className="btn-sm">Change Team</button>
+          {admin && isSubmitted && <button onClick={unlockForEdit} className="btn-sm" style={{borderColor:"var(--red)",color:"var(--red)"}}>Unlock</button>}
+        </div>
+      </div>
+
+      {/* Case context */}
+      <div style={{padding:"20px",borderBottom:"1px solid var(--border)"}}>
+        <h2 style={{fontFamily:"var(--ff)",fontSize:24,color:"var(--gold)",fontWeight:700,marginBottom:4}}>{cs.title}</h2>
+        <div style={{fontSize:14,color:"var(--goldDim)",letterSpacing:2,textTransform:"uppercase",marginBottom:12}}>{cs.subtitle}</div>
+        <p style={{fontSize:16,color:"var(--txt)",lineHeight:1.6}}>{cs.context}</p>
+      </div>
+
+      {/* Key stats table */}
+      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)"}}>
+        <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>📊 Key Performance Data — March 2026</div>
+        <div style={{background:"var(--input)",borderRadius:10,overflow:"hidden",border:"1px solid var(--border)"}}>
+          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:0,background:"var(--card)",padding:"10px 14px",fontSize:12,fontWeight:600,color:"var(--goldDim)",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid var(--border)"}}>
+            <div>Metric</div><div style={{textAlign:"right"}}>Actual</div><div style={{textAlign:"right"}}>Budget/Fcst</div><div style={{textAlign:"right"}}>Variance</div>
+          </div>
+          {cs.keyStats.map((s,i) => (
+            <div key={i} style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:0,padding:"8px 14px",fontSize:14,borderBottom:i<cs.keyStats.length-1?"1px solid var(--border)":"none"}}>
+              <div style={{color:"var(--txt)",fontWeight:s.label.startsWith("  ")?400:500}}>{s.label}</div>
+              <div style={{textAlign:"right",color:"var(--txt)",fontVariantNumeric:"tabular-nums"}}>{s.actual}</div>
+              <div style={{textAlign:"right",color:"var(--dim)",fontVariantNumeric:"tabular-nums"}}>{s.budget}</div>
+              <div style={{textAlign:"right",fontWeight:600,fontVariantNumeric:"tabular-nums",color:s.delta.startsWith("+")&&!s.delta.includes("✓")?"var(--gold)":s.delta.startsWith("-")&&!s.delta.includes("✓")?"var(--red)":"var(--goldDim)"}}>{s.delta}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Questions + answers */}
+      <div style={{padding:"20px"}}>
+        <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>📝 Your Responses</div>
+        {!isSubmitted && <p style={{fontSize:13,color:"var(--dim)",marginBottom:16,fontStyle:"italic"}}>Answers auto-save as you type. Submit when your team is ready — you can still edit and resubmit after.</p>}
+
+        {cs.questions.map((q, i) => (
+          <div key={i} style={{marginBottom:24,padding:16,background:"var(--card)",borderRadius:12,border:"1px solid var(--border)"}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:10}}>
+              <div style={{background:"var(--gold)",color:"var(--bg)",width:28,height:28,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,flexShrink:0,fontSize:14}}>{i+1}</div>
+              <div>
+                <div style={{fontFamily:"var(--ff)",fontSize:17,color:"var(--gold)",fontWeight:700,marginBottom:4}}>{q.title}</div>
+                <div style={{fontSize:15,color:"var(--txt)",lineHeight:1.55}}>{q.text}</div>
+              </div>
+            </div>
+            <textarea
+              value={localAnswers[`a${i+1}`] || ""}
+              onChange={e => saveAnswer(i, e.target.value)}
+              disabled={isSubmitted}
+              placeholder="Type your team's response here..."
+              rows={6}
+              className="field"
+              style={{resize:"vertical",marginTop:10,minHeight:120,opacity:isSubmitted?0.7:1,cursor:isSubmitted?"not-allowed":"text"}}
+            />
+            {localAnswers[`a${i+1}`] && (
+              <div style={{fontSize:11,color:"var(--mute)",marginTop:4,textAlign:"right"}}>
+                {localAnswers[`a${i+1}`].length} characters · auto-saved
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Submit / Edit block */}
+        <div style={{marginTop:24,padding:"20px",background:"var(--card)",borderRadius:12,border:`2px solid ${isSubmitted?"var(--gold)":"var(--border)"}`,textAlign:"center"}}>
+          {isSubmitted ? (
+            <div>
+              <div style={{fontSize:32,marginBottom:8}}>✅</div>
+              <div style={{fontFamily:"var(--ff)",fontSize:20,color:"var(--gold)",fontWeight:700,marginBottom:4}}>Responses Submitted</div>
+              <div style={{fontSize:13,color:"var(--dim)",marginBottom:16}}>
+                Submitted {teamResp?.submittedAt ? new Date(teamResp.submittedAt).toLocaleString() : "recently"}
+              </div>
+              <button onClick={editAgain} className="btn-sm" style={{padding:"10px 24px",fontSize:14,borderColor:"var(--gold)",color:"var(--gold)"}}>
+                ✏️ Edit & Resubmit
+              </button>
+              <div style={{fontSize:11,color:"var(--mute)",marginTop:10,fontStyle:"italic"}}>
+                Unlocks the form so your team can revise and resubmit
+              </div>
+            </div>
+          ) : (
+            <>
+              <p style={{fontSize:14,color:"var(--dim)",marginBottom:14}}>
+                Review your responses above, then submit when your team agrees on final answers.
+              </p>
+              <button onClick={submit} className="btn-gold" style={{fontSize:17,padding:"14px 36px"}}>
+                🎯 Submit {teamResp?.submittedAt ? "Updated" : ""} Responses
+              </button>
+              {teamResp?.submittedAt && (
+                <div style={{fontSize:12,color:"var(--mute)",marginTop:8}}>
+                  Previously submitted {new Date(teamResp.submittedAt).toLocaleString()}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── WELCOME ───
 function Welcome({onEnter}) {
   return (
@@ -835,7 +1181,7 @@ function Welcome({onEnter}) {
         <QRCode size={220} />
       </div>
       <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:28}}>
-        {["📋 Agenda","💬 Q&A","🎉 Shoutouts","📸 Photos","📊 Polls","💡 Takeaways"].map(x => (
+        {["📋 Agenda","💬 Q&A","🎉 Shoutouts","📸 Photos","📊 Polls","💡 Takeaways","🎓 Workshop"].map(x => (
           <span key={x} style={{padding:"8px 18px",borderRadius:20,background:"var(--glow)",border:"1px solid var(--border)",fontSize:16,fontWeight:500}}>{x}</span>
         ))}
       </div>
@@ -879,6 +1225,7 @@ function App() {
     {id:"photos",label:"Photos",icon:"📸",count:cnt.p},
     {id:"polls",label:"Polls",icon:"📊",count:cnt.po},
     {id:"takeaways",label:"Takeaways",icon:"💡",count:cnt.tk},
+    {id:"workshop",label:"Workshop",icon:"🎓",count:0},
   ];
 
   if (scr==="welcome") return <Welcome onEnter={() => setScr("main")} />;
@@ -924,6 +1271,7 @@ function App() {
           {tab==="photos" && <PTab dm={dm} admin={admin} />}
           {tab==="polls" && <PoTab dm={dm} admin={admin} />}
           {tab==="takeaways" && <TkTab dm={dm} />}
+          {tab==="workshop" && <WorkshopTab dm={dm} admin={admin} />}
         </>)}
       </div>
 
