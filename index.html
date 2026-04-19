@@ -158,15 +158,15 @@ const AGENDA = [
 ];
 
 // ─── WORKSHOP CASES ───
-const TEAMS = [
-  { id: "A", name: "Team A", case: "flow" },
-  { id: "B", name: "Team B", case: "flex" },
-  { id: "C", name: "Team C", case: "flow" },
-  { id: "D", name: "Team D", case: "flex" },
+const CASE_LIST = [
+  { id: "public1", label: "Public Case 1", subtitle: "Flow", available: true },
+  { id: "public2", label: "Public Case 2", subtitle: "Flex", available: true },
+  { id: "private1", label: "Private Case 1", subtitle: "Coming Soon", available: false },
+  { id: "private2", label: "Private Case 2", subtitle: "Coming Soon", available: false },
 ];
 
 const CASES = {
-  flow: {
+  public1: {
     title: "Public Club — 'Flow' Case",
     subtitle: "March 2026 MOS · Southeast Daily Fee Club",
     context: "This is the March 2026 MOS for a daily fee club in the Southeast. The club has a few members, but they are more of an annual passholder style and do not have charging privileges. The club had a great month on the revenue side — but, did they manage the bottom line well enough to flow through to their potential? Dig into the performance and answer the questions below.",
@@ -197,7 +197,7 @@ const CASES = {
       { title: "Cash Flow Breakeven Analysis", text: "Net Cash Flow after non-controllable expenses is $169,850 (38.1% of revenue). Non-controllable expenses total $31,127. If NOI before fees is $212,649, what is the realistic cash flow breakeven point for this club — i.e., what minimum monthly revenue level is needed to cover all fixed costs (non-controllable + management fee = ~$42,800) and still generate positive free cash flow to fund capital reserves and debt service?" }
     ]
   },
-  flex: {
+  public2: {
     title: "Public Club — 'Flex' Case",
     subtitle: "March 2026 MOS · Southeast Daily Fee Club",
     context: "This is the March 2026 MOS for a daily fee club in the Southeast. The club has a few members, but they are more of an annual passholder style and do not have charging privileges. The club had a poor month on the revenue side — but, did they do enough on the expenses side to mitigate the damage? Dig into the performance, find some reasons for potential revenue issues and answer the questions below.",
@@ -817,7 +817,7 @@ function AdminModal({onClose}) {
         localStorage.removeItem("lc26_voted");
         localStorage.removeItem("lc26_reacted");
         localStorage.removeItem("lc26_pollvotes");
-        localStorage.removeItem("lc26_team");
+        localStorage.removeItem("lc26_workshop");
       } catch {}
       setConfirmReset(false);
       alert("All data has been reset.");
@@ -829,7 +829,7 @@ function AdminModal({onClose}) {
       localStorage.removeItem("lc26_voted");
       localStorage.removeItem("lc26_reacted");
       localStorage.removeItem("lc26_pollvotes");
-      localStorage.removeItem("lc26_team");
+      localStorage.removeItem("lc26_workshop");
     } catch {}
     alert("Your local history has been cleared. Refresh the page to see the effect.");
   };
@@ -900,56 +900,74 @@ function WorkshopTab({dm, admin}) {
   const responsesRaw = useFirebase("workshop_responses");
   const responses = responsesRaw || {};
 
-  const [teamId, setTeamId] = useState(() => {
-    try { return localStorage.getItem("lc26_team") || ""; } catch { return ""; }
+  // Load from localStorage: { caseId, teamName, submissionId }
+  const [session, setSession] = useState(() => {
+    try {
+      const s = localStorage.getItem("lc26_workshop");
+      return s ? JSON.parse(s) : null;
+    } catch { return null; }
   });
-  const [localAnswers, setLocalAnswers] = useState({});
-  const [showChangeTeam, setShowChangeTeam] = useState(false);
 
-  // Load existing team response on team select
+  const [pickingCase, setPickingCase] = useState(null); // which case was tapped (awaiting team name)
+  const [teamNameInput, setTeamNameInput] = useState("");
+  const [localAnswers, setLocalAnswers] = useState({});
+
+  // Hydrate answers when session active
   useEffect(() => {
-    if (teamId && responses[teamId]) {
-      const saved = responses[teamId];
+    if (session?.submissionId && responses[session.caseId]?.[session.submissionId]) {
+      const saved = responses[session.caseId][session.submissionId];
       setLocalAnswers({
         a1: saved.a1 || "", a2: saved.a2 || "", a3: saved.a3 || "",
         a4: saved.a4 || "", a5: saved.a5 || ""
       });
+    } else if (!session) {
+      setLocalAnswers({});
     }
-  }, [teamId, responsesRaw]);
+  }, [session, responsesRaw]);
 
-  const team = TEAMS.find(t => t.id === teamId);
-  const cs = team ? CASES[team.case] : null;
-  const teamResp = teamId ? responses[teamId] : null;
+  const cs = session ? CASES[session.caseId] : null;
+  const teamResp = session?.submissionId ? responses[session.caseId]?.[session.submissionId] : null;
   const isSubmitted = teamResp?.submitted;
 
-  const pickTeam = (id) => {
-    setTeamId(id);
-    try { localStorage.setItem("lc26_team", id); } catch {}
-    setShowChangeTeam(false);
+  const startSession = (caseId, teamName) => {
+    const tn = teamName.trim();
+    if (!tn) return;
+    // Generate a unique submission ID based on team name + timestamp
+    const submissionId = tn.toLowerCase().replace(/[^a-z0-9]/g,"_").slice(0,30) + "_" + Date.now().toString(36).slice(-5);
+    const s = { caseId, teamName: tn, submissionId };
+    // Seed the firebase record
+    fbUpdate(`workshop_responses/${caseId}/${submissionId}`, {
+      teamName: tn,
+      caseId: caseId,
+      createdAt: Date.now(),
+    });
+    setSession(s);
+    try { localStorage.setItem("lc26_workshop", JSON.stringify(s)); } catch {}
+    setPickingCase(null);
+    setTeamNameInput("");
   };
 
-  const clearTeam = () => {
-    setTeamId("");
+  const leaveSession = () => {
+    setSession(null);
     setLocalAnswers({});
-    try { localStorage.removeItem("lc26_team"); } catch {}
+    try { localStorage.removeItem("lc26_workshop"); } catch {}
   };
 
   const saveAnswer = (qIdx, text) => {
     const key = `a${qIdx+1}`;
     const newAns = {...localAnswers, [key]: text};
     setLocalAnswers(newAns);
-    // Debounced auto-save
-    fbUpdate(`workshop_responses/${teamId}`, {
+    fbUpdate(`workshop_responses/${session.caseId}/${session.submissionId}`, {
       ...newAns,
-      teamName: team.name,
-      caseId: team.case,
+      teamName: session.teamName,
+      caseId: session.caseId,
       lastSaved: Date.now(),
     });
   };
 
   const submit = () => {
     if (!window.confirm("Submit your team's responses?\n\nYou can still edit and resubmit after this.")) return;
-    fbUpdate(`workshop_responses/${teamId}`, {
+    fbUpdate(`workshop_responses/${session.caseId}/${session.submissionId}`, {
       submitted: true,
       submittedAt: Date.now(),
     });
@@ -957,14 +975,29 @@ function WorkshopTab({dm, admin}) {
 
   const editAgain = () => {
     if (!window.confirm("Edit your team's response?\n\nYou'll need to resubmit when done.")) return;
-    fbUpdate(`workshop_responses/${teamId}`, { submitted: false });
+    fbUpdate(`workshop_responses/${session.caseId}/${session.submissionId}`, { submitted: false });
   };
 
   const unlockForEdit = () => {
     if (!admin) return;
     if (window.confirm("Unlock this team's response for editing?")) {
-      fbUpdate(`workshop_responses/${teamId}`, { submitted: false });
+      fbUpdate(`workshop_responses/${session.caseId}/${session.submissionId}`, { submitted: false });
     }
+  };
+
+  const adminDeleteTeam = (caseId, submissionId, teamName) => {
+    if (!admin) return;
+    if (!window.confirm(`Delete "${teamName}"'s submission?\n\nThis cannot be undone.`)) return;
+    fbRemove(`workshop_responses/${caseId}/${submissionId}`);
+  };
+
+  // Count submissions per case
+  const caseStats = (cid) => {
+    const subs = responses[cid] || {};
+    const teams = Object.values(subs);
+    const submitted = teams.filter(t => t?.submitted).length;
+    const inProgress = teams.filter(t => !t?.submitted && t?.teamName).length;
+    return { total: teams.length, submitted, inProgress };
   };
 
   // ADMIN: Export all responses
@@ -972,21 +1005,39 @@ function WorkshopTab({dm, admin}) {
     const lines = [];
     lines.push("═══════════════════════════════════════════════════════════════");
     lines.push("  LC26 WORKSHOP — TEAM RESPONSES FOR GRADING");
+    lines.push(`  Exported: ${new Date().toLocaleString()}`);
     lines.push("═══════════════════════════════════════════════════════════════\n");
-    TEAMS.forEach(t => {
-      const r = responses[t.id];
-      const c = CASES[t.case];
-      lines.push(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      lines.push(`TEAM: ${t.name}`);
-      lines.push(`CASE: ${c.title}`);
-      lines.push(`STATUS: ${r?.submitted ? "✓ Submitted" : r ? "In Progress" : "Not Started"}`);
-      if (r?.submittedAt) lines.push(`SUBMITTED: ${new Date(r.submittedAt).toLocaleString()}`);
-      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-      c.questions.forEach((q, i) => {
-        lines.push(`QUESTION ${i+1}: ${q.title}`);
-        lines.push(`${q.text}\n`);
-        lines.push(`ANSWER:`);
-        lines.push(`${(r && r[`a${i+1}`]) || "(no response)"}\n`);
+
+    CASE_LIST.forEach(cl => {
+      if (!cl.available) return;
+      const c = CASES[cl.id];
+      const subs = responses[cl.id] || {};
+      const teams = Object.entries(subs)
+        .map(([sid, v]) => ({...v, _sid: sid}))
+        .filter(t => t.teamName);
+
+      lines.push(`\n\n╔══════════════════════════════════════════════════════════════╗`);
+      lines.push(`║ CASE: ${c.title}`);
+      lines.push(`║ TEAMS: ${teams.length} total · ${teams.filter(t=>t.submitted).length} submitted`);
+      lines.push(`╚══════════════════════════════════════════════════════════════╝`);
+
+      if (teams.length === 0) {
+        lines.push("\n(No teams have started this case yet.)\n");
+        return;
+      }
+
+      teams.forEach((t, idx) => {
+        lines.push(`\n────────────────────────────────────────────────────────────────`);
+        lines.push(`TEAM ${idx+1}: ${t.teamName}`);
+        lines.push(`STATUS: ${t.submitted ? "✓ Submitted" : "In Progress"}`);
+        if (t.submittedAt) lines.push(`SUBMITTED: ${new Date(t.submittedAt).toLocaleString()}`);
+        lines.push(`────────────────────────────────────────────────────────────────\n`);
+        c.questions.forEach((q, i) => {
+          lines.push(`\nQuestion ${i+1}: ${q.title}`);
+          lines.push(`${q.text}\n`);
+          lines.push(`Answer:`);
+          lines.push(`${t[`a${i+1}`] || "(no response)"}\n`);
+        });
       });
     });
     const blob = new Blob([lines.join("\n")], {type:"text/plain"});
@@ -1000,78 +1051,122 @@ function WorkshopTab({dm, admin}) {
     URL.revokeObjectURL(url);
   };
 
-  // ── No team selected: show picker ──
-  if (!teamId || showChangeTeam) {
+  // ── Prompt for team name after case pick ──
+  if (pickingCase) {
+    const c = CASES[pickingCase];
+    return (
+      <div style={{padding:"32px 20px",textAlign:"center",maxWidth:520,margin:"0 auto"}}>
+        <div style={{fontSize:40,marginBottom:12}}>🎓</div>
+        <h2 style={{fontFamily:"var(--ff)",fontSize:24,color:"var(--gold)",fontWeight:700,marginBottom:6}}>{c.title}</h2>
+        <p style={{fontSize:14,color:"var(--dim)",marginBottom:24}}>Before you start, tell us your team name so your answers stay grouped together.</p>
+        <input value={teamNameInput} onChange={e=>setTeamNameInput(e.target.value)} placeholder="Your team name (e.g. 'The Eagles')"
+          className="field" style={{textAlign:"center",fontSize:18,maxWidth:340,margin:"0 auto",display:"block",marginBottom:16}}
+          onKeyDown={e=>{if(e.key==="Enter"&&teamNameInput.trim())startSession(pickingCase, teamNameInput);}}
+          autoFocus />
+        <div style={{display:"flex",gap:10,justifyContent:"center"}}>
+          <button onClick={() => {setPickingCase(null);setTeamNameInput("");}} className="btn-sm" style={{padding:"10px 20px",fontSize:14}}>Cancel</button>
+          <button onClick={() => startSession(pickingCase, teamNameInput)} disabled={!teamNameInput.trim()} className="btn-gold" style={{padding:"10px 28px",fontSize:15,opacity:teamNameInput.trim()?1:0.5}}>
+            Start Working →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── No active session: show case picker (+ admin view) ──
+  if (!session) {
     return (
       <div style={{padding:"24px 20px",maxHeight:dm?"calc(100vh - 180px)":"auto",overflowY:"auto"}}>
         {admin && (
           <div style={{marginBottom:24,padding:16,background:"var(--card)",border:"1px solid var(--border)",borderRadius:12}}>
-            <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Admin — Team Status</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}>
-              {TEAMS.map(t => {
-                const r = responses[t.id];
-                const done = r?.submitted;
-                const started = r && Object.keys(r).some(k=>k.startsWith("a") && r[k]?.trim());
-                let count = 0;
-                if (r) for (let i=1;i<=5;i++) if (r[`a${i}`]?.trim()) count++;
-                return (
-                  <div key={t.id} style={{padding:10,background:"var(--input)",borderRadius:8,border:`1px solid ${done?"var(--gold)":started?"var(--goldDim)":"var(--border)"}`}}>
-                    <div style={{fontFamily:"var(--ff)",fontSize:15,fontWeight:700,color:"var(--gold)"}}>{t.name}</div>
-                    <div style={{fontSize:12,color:"var(--dim)"}}>{CASES[t.case].title.replace("Public Club — ","")}</div>
-                    <div style={{fontSize:12,color:done?"var(--gold)":"var(--dim)",marginTop:4,fontWeight:600}}>
-                      {done ? "✓ Submitted" : `${count}/5 answered`}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1}}>Admin — Live Submissions</div>
+              <button onClick={exportAll} className="btn-gold" style={{fontSize:14,padding:"8px 16px"}}>📊 Export All</button>
+            </div>
+            {CASE_LIST.filter(c=>c.available).map(cl => {
+              const stats = caseStats(cl.id);
+              const subs = responses[cl.id] || {};
+              const teams = Object.entries(subs).map(([sid, v]) => ({...v, _sid: sid})).filter(t=>t.teamName);
+              return (
+                <div key={cl.id} style={{marginBottom:14,padding:12,background:"var(--input)",borderRadius:8,border:"1px solid var(--border)"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                    <div>
+                      <span style={{fontFamily:"var(--ff)",fontSize:15,fontWeight:700,color:"var(--gold)"}}>{cl.label}</span>
+                      <span style={{fontSize:12,color:"var(--dim)",marginLeft:8}}>({cl.subtitle})</span>
+                    </div>
+                    <div style={{fontSize:12,color:"var(--dim)"}}>
+                      <span style={{color:"var(--gold)",fontWeight:600}}>{stats.submitted}</span> submitted · <span style={{color:"var(--goldDim)"}}>{stats.inProgress}</span> in progress
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            <button onClick={exportAll} className="btn-gold" style={{fontSize:14}}>📊 Export All for Grading</button>
+                  {teams.length > 0 ? (
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:6}}>
+                      {teams.map(t => {
+                        let count = 0;
+                        for (let i=1;i<=5;i++) if (t[`a${i}`]?.trim()) count++;
+                        return (
+                          <div key={t._sid} style={{padding:"6px 10px",background:"var(--bg)",borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,border:`1px solid ${t.submitted?"var(--gold)":"var(--border)"}`}}>
+                            <div style={{flex:1,minWidth:0,overflow:"hidden"}}>
+                              <div style={{fontSize:13,fontWeight:600,color:"var(--txt)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.teamName}</div>
+                              <div style={{fontSize:10,color:t.submitted?"var(--gold)":"var(--dim)"}}>{t.submitted ? "✓ Submitted" : `${count}/5`}</div>
+                            </div>
+                            <button onClick={() => adminDeleteTeam(cl.id, t._sid, t.teamName)} style={{background:"none",border:"none",color:"var(--red)",cursor:"pointer",fontSize:14,padding:2}} title="Delete">🗑</button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : <div style={{fontSize:12,color:"var(--mute)",fontStyle:"italic"}}>No teams yet</div>}
+                </div>
+              );
+            })}
           </div>
         )}
         <div style={{textAlign:"center",padding:"24px 16px"}}>
           <div style={{fontSize:40,marginBottom:12}}>🎓</div>
           <h2 style={{fontFamily:"var(--ff)",fontSize:26,color:"var(--gold)",fontWeight:700,marginBottom:8}}>Case Workshop</h2>
           <p style={{fontSize:16,color:"var(--dim)",marginBottom:24,maxWidth:480,margin:"0 auto 24px"}}>
-            Select your team to view your assigned case study and submit responses.
+            Select the case your team has been assigned.
           </p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:10,maxWidth:520,margin:"0 auto"}}>
-            {TEAMS.map(t => {
-              const r = responses[t.id];
-              const done = r?.submitted;
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12,maxWidth:620,margin:"0 auto"}}>
+            {CASE_LIST.map(cl => {
+              const stats = cl.available ? caseStats(cl.id) : {total:0};
               return (
-                <button key={t.id} onClick={() => pickTeam(t.id)}
-                  style={{padding:"16px 20px",background:done?"rgba(201,165,78,0.1)":"var(--card)",
-                    border:`2px solid ${done?"var(--goldDim)":"var(--border)"}`,
-                    borderRadius:12,cursor:"pointer",textAlign:"left",transition:"all .2s"}}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.transform="translateY(-2px)";}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor=done?"var(--goldDim)":"var(--border)";e.currentTarget.style.transform="translateY(0)";}}>
-                  <div style={{fontFamily:"var(--ff)",fontSize:20,fontWeight:700,color:"var(--gold)"}}>{t.name}</div>
-                  <div style={{fontSize:13,color:"var(--dim)",marginTop:4}}>{CASES[t.case].title.split("—")[1].trim()}</div>
-                  {done && <div style={{fontSize:12,color:"var(--gold)",marginTop:6,fontWeight:600}}>✓ Submitted</div>}
+                <button key={cl.id} onClick={() => cl.available && setPickingCase(cl.id)} disabled={!cl.available}
+                  style={{padding:"18px 20px",
+                    background:cl.available?"var(--card)":"rgba(26,43,32,0.4)",
+                    border:`2px solid ${cl.available?"var(--border)":"var(--border)"}`,
+                    borderRadius:12,cursor:cl.available?"pointer":"not-allowed",textAlign:"left",transition:"all .2s",
+                    opacity:cl.available?1:0.5}}
+                  onMouseEnter={e=>{if(cl.available){e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.transform="translateY(-2px)";}}}
+                  onMouseLeave={e=>{if(cl.available){e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.transform="translateY(0)";}}}>
+                  <div style={{fontFamily:"var(--ff)",fontSize:20,fontWeight:700,color:cl.available?"var(--gold)":"var(--dim)"}}>{cl.label}</div>
+                  <div style={{fontSize:14,color:"var(--dim)",marginTop:4}}>{cl.subtitle}</div>
+                  {cl.available && stats.total > 0 && (
+                    <div style={{fontSize:11,color:"var(--goldDim)",marginTop:8,fontWeight:600}}>{stats.total} {stats.total===1?"team":"teams"} active</div>
+                  )}
                 </button>
               );
             })}
           </div>
-          {showChangeTeam && (
-            <button onClick={() => setShowChangeTeam(false)} className="btn-sm" style={{marginTop:20}}>Cancel</button>
-          )}
+          <p style={{marginTop:24,fontSize:12,color:"var(--mute)",fontStyle:"italic"}}>
+            Multiple teams can work on the same case — you'll enter your team name after selecting.
+          </p>
         </div>
       </div>
     );
   }
 
-  // ── Team selected: show case + response form ──
+  // ── Active session: show case + response form ──
   return (
     <div style={{maxHeight:dm?"calc(100vh - 180px)":"auto",overflowY:"auto"}}>
       {/* Team header */}
       <div style={{padding:"14px 20px",borderBottom:"1px solid var(--border)",background:"var(--card)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
         <div>
-          <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1}}>Current Team</div>
-          <div style={{fontFamily:"var(--ff)",fontSize:22,color:"var(--gold)",fontWeight:700}}>{team.name}</div>
+          <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1}}>Team</div>
+          <div style={{fontFamily:"var(--ff)",fontSize:22,color:"var(--gold)",fontWeight:700}}>{session.teamName}</div>
         </div>
         <div style={{display:"flex",gap:6,alignItems:"center"}}>
           {isSubmitted && <span style={{padding:"4px 10px",background:"var(--glow)",border:"1px solid var(--gold)",borderRadius:8,color:"var(--gold)",fontSize:13,fontWeight:600}}>✓ Submitted</span>}
-          <button onClick={() => setShowChangeTeam(true)} className="btn-sm">Change Team</button>
+          <button onClick={leaveSession} className="btn-sm">Leave Team</button>
           {admin && isSubmitted && <button onClick={unlockForEdit} className="btn-sm" style={{borderColor:"var(--red)",color:"var(--red)"}}>Unlock</button>}
         </div>
       </div>
@@ -1144,9 +1239,6 @@ function WorkshopTab({dm, admin}) {
               <button onClick={editAgain} className="btn-sm" style={{padding:"10px 24px",fontSize:14,borderColor:"var(--gold)",color:"var(--gold)"}}>
                 ✏️ Edit & Resubmit
               </button>
-              <div style={{fontSize:11,color:"var(--mute)",marginTop:10,fontStyle:"italic"}}>
-                Unlocks the form so your team can revise and resubmit
-              </div>
             </div>
           ) : (
             <>
