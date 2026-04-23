@@ -159,8 +159,8 @@ const AGENDA = [
 
 // ─── WORKSHOP CASES ───
 const CASE_LIST = [
-  { id: "public1", label: "Public Case 1", subtitle: "Flow", available: true },
-  { id: "public2", label: "Public Case 2", subtitle: "Flex", available: true },
+  { id: "public1", label: "Public Case 1", subtitle: "The Flow Course", available: true },
+  { id: "public2", label: "Public Case 2", subtitle: "The Flex Course", available: true },
   { id: "private1", label: "Private Case 1", subtitle: "Coming Soon", available: false },
   { id: "private2", label: "Private Case 2", subtitle: "Coming Soon", available: false },
 ];
@@ -218,10 +218,36 @@ const CASES = {
     questions: [
       { title: "F&B Non-event Revenue Collapse & Expense Response", text: "F&B Non-event Revenues fell to $18,940 against a $28,200 forecast — a 32.8% miss ($9,260 shortfall) — while Banquet Revenues hit near-plan at $32,375 vs. $32,750. F&B Payroll still ran $9,967 (4.9% over the $9,500 forecast) despite serving far fewer member covers. With Non-event revenue driving the entire F&B shortfall, should management restructure the member dining operation (fewer scheduled hours, reduced prep staff, minimum-spend requirements) or is the Banquet strength enough to justify holding current F&B staffing levels?" },
       { title: "Rounds Volume & Revenue-per-Round Dynamics", text: "Total Rounds came in at 5,067 against a 5,800 forecast — a 12.6% shortfall (733 fewer rounds) — yet total Golf Revenues were only 3.9% below forecast ($310,159 vs. $322,760). Revenue per round actually increased from a forecasted $55.65 to $61.21 (10.0% higher). Is the higher per-round yield masking a dangerous volume decline, or does it signal successful yield management (pricing optimization, tee-time management) that should be continued even at the cost of lower utilization?" },
-      { title: "Golf Shop Merch COS & Payroll Economics", text: "Golf Shop Merchandise revenue came in below forecast while payroll remained at planned levels. With fewer rounds driving less shop traffic, should the shop cut hours/staff to match the lower volume, or maintain service levels to preserve per-visit conversion and average ticket? What's the right labor-to-revenue ratio given current traffic?" },
-      { title: "Expense Management Effectiveness — Did They Flex?", text: "On a month where total revenue missed forecast materially, did management successfully flex variable expenses down in proportion? Identify which line items flexed appropriately, which did not, and what the net impact was on the bottom line vs. what it could have been with disciplined expense management." },
-      { title: "Volume Recovery Strategy", text: "With rounds down 12.6% and occupancy at 82.6% vs. a 93.5% forecast, what tactical plan should this club pursue to recover volume without eroding the strong per-round yield? Consider off-peak promotions, tournament outreach, membership conversion opportunities, and competitive positioning." }
+      { title: "Golf Shop Merch COS & Payroll Economics", text: "Golf Shop Merchandise revenue beat forecast by 6.8% ($26,711 vs. $25,000), but Merch COS ran 58.2% ($15,547) vs. a forecasted 56.0% ($14,000), compressing gross margin to 41.8%. Meanwhile, Golf Shop Payroll hit $24,350 — 5.9% over the $23,000 forecast. With gross profit of only $11,164 on $26,711 in sales, Golf Shop Payroll alone exceeds merchandise gross profit by $13,186. Is the pro shop operating as a viable profit center, or is it functioning as an amenity that should be right-sized to minimize losses?" },
+      { title: "Payroll Discipline in a Down-Revenue Month", text: "Total Revenue missed forecast by 5.8% ($22,579), yet Total Payroll ran $100,231 — 1.5% ($1,511) over the $98,720 forecast. The Cart Department is the worst offender: cart revenue fell 5.2% below plan ($132,716 vs. $140,000) while Cart Payroll surged 14.8% over forecast ($6,999 vs. $6,095). Only Golf Course Maintenance reduced payroll vs. plan (-3.0%). In a month where revenue underperformed, should every department have been expected to flex payroll below forecast, or were some overages justified by operational necessity?" },
+      { title: "Cash Flow Breakeven Analysis", text: "Net Cash Flow after non-controllable expenses is $121,630 (33.0% of revenue). Non-controllable expenses total $30,516. If NOI before fees is $163,817, what is the realistic cash flow breakeven point for this club — i.e., what minimum monthly revenue level is needed to cover all fixed costs (non-controllable + management fee = ~$42,187) and still generate positive free cash flow to fund capital reserves and debt service?" }
     ]
+  }
+};
+
+// ─── COURSE GUIDE ───
+const COURSE_GUIDE = {
+  tagline: "⛳ THE FANTASY GOLF PARTNERS CASE STUDY MASTERS",
+  intro: "This exercise is a set of performance case studies set at fictional daily-fee and private golf clubs. Teams are given one month of actual financial data — revenue, payroll, cost of sales, and cash flow — and asked to analyze five operational challenges facing the clubs' management. Think of it as a 5-hole round: each question is a hole, and the quality of your analysis determines your score.",
+  quote: "Paraphrasing Bobby Jones: there isn't a question that can't be birdied if you just think, but every question can be double-bogeyed if you stop thinking. Good luck!",
+  criteria: [
+    { icon: "✓", label: "Accurate financial analysis", text: "correct figures, variances, and percentages from the data" },
+    { icon: "✓", label: "Root-cause thinking", text: "explain WHY the numbers look the way they do, not just WHAT they are" },
+    { icon: "✓", label: "Specific, actionable recommendations", text: "tied to this club's situation, not generic advice" },
+    { icon: "✓", label: "Quantified impact", text: "show the dollar value of your recommendations where possible" },
+    { icon: "✓", label: "Cross-departmental connections", text: "the best analysts see how issues in one area affect others" },
+  ],
+  scorecard: [
+    { score: 1, term: "Hole-in-One", toPar: "-2", desc: "Mastery. Thorough, data-driven analysis with accurate financials, root-cause identification, quantified impact, and multiple prioritized recommendations. May include benchmarks and cross-departmental insight." },
+    { score: 2, term: "Birdie", toPar: "-1", desc: "Solid competency. Accurate data, valid conclusions, and at least one specific actionable recommendation. Minor gaps in depth acceptable." },
+    { score: 3, term: "Par", toPar: "E", desc: "Foundational understanding. Identifies the core issue with some relevant data, but analysis is incomplete — missing key comparisons, minor errors, or generic recommendations." },
+    { score: 4, term: "Bogey", toPar: "+1", desc: "Partial understanding. Identifies the issue at a surface level but lacks supporting data, contains significant errors, or provides only vague recommendations." },
+    { score: 5, term: "Double Bogey", toPar: "+2", desc: "No response, blank, or completely off-topic. Did not address the question in any meaningful way." },
+  ],
+  round: {
+    par: "15 (3 per hole × 5 holes)",
+    best: "5 (−10 under par — five Holes-in-One)",
+    worst: "25 (+10 over par — five Double Bogeys)",
   }
 };
 
@@ -792,6 +818,12 @@ function AdminModal({onClose}) {
   const [confirmReset, setConfirmReset] = useState(false);
   const raw = useFirebase("announcements");
   const anns = toArr(raw).filter(a => a.on);
+  const settingsRaw = useFirebase("settings");
+  const workshopVisible = settingsRaw?.workshopVisible === true;
+
+  const toggleWorkshop = () => {
+    fbUpdate("settings", { workshopVisible: !workshopVisible });
+  };
 
   const post = () => { if(!txt.trim())return; fbPush("announcements",{text:txt.trim(),on:true,ts:Date.now()}); setTxt(""); };
   const dismiss = key => fbUpdate(`announcements/${key}`, {on:false});
@@ -818,6 +850,7 @@ function AdminModal({onClose}) {
         localStorage.removeItem("lc26_reacted");
         localStorage.removeItem("lc26_pollvotes");
         localStorage.removeItem("lc26_workshop");
+        localStorage.removeItem("lc26_guide_viewed");
       } catch {}
       setConfirmReset(false);
       alert("All data has been reset.");
@@ -830,6 +863,7 @@ function AdminModal({onClose}) {
       localStorage.removeItem("lc26_reacted");
       localStorage.removeItem("lc26_pollvotes");
       localStorage.removeItem("lc26_workshop");
+      localStorage.removeItem("lc26_guide_viewed");
     } catch {}
     alert("Your local history has been cleared. Refresh the page to see the effect.");
   };
@@ -854,6 +888,32 @@ function AdminModal({onClose}) {
             <button onClick={() => dismiss(a._key)} className="btn-sm">Dismiss</button>
           </div>
         ))}
+
+        {/* Divider */}
+        <div style={{borderTop:"1px solid var(--border)",margin:"20px 0"}} />
+
+        {/* Feature visibility */}
+        <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Feature Visibility</div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 14px",background:"var(--input)",borderRadius:10,border:`1px solid ${workshopVisible?"var(--gold)":"var(--border)"}`}}>
+          <div>
+            <div style={{fontFamily:"var(--ff)",fontSize:15,color:"var(--txt)",fontWeight:600}}>🎓 Workshop Tab</div>
+            <div style={{fontSize:12,color:"var(--dim)",marginTop:2}}>
+              {workshopVisible ? "Visible to all attendees" : "Hidden from attendees (admin only)"}
+            </div>
+          </div>
+          <button onClick={toggleWorkshop} style={{
+            width:56,height:30,borderRadius:15,border:"none",cursor:"pointer",
+            background:workshopVisible?"var(--gold)":"var(--border)",
+            position:"relative",transition:"background .2s",padding:0,
+          }}>
+            <div style={{
+              position:"absolute",top:3,left:workshopVisible?29:3,
+              width:24,height:24,borderRadius:"50%",
+              background:workshopVisible?"var(--bg)":"var(--dim)",
+              transition:"left .2s",
+            }} />
+          </button>
+        </div>
 
         {/* Divider */}
         <div style={{borderTop:"1px solid var(--border)",margin:"20px 0"}} />
@@ -908,9 +968,19 @@ function WorkshopTab({dm, admin}) {
     } catch { return null; }
   });
 
+  const [guideViewed, setGuideViewed] = useState(() => {
+    try { return localStorage.getItem("lc26_guide_viewed") === "true"; } catch { return false; }
+  });
+
   const [pickingCase, setPickingCase] = useState(null); // which case was tapped (awaiting team name)
   const [teamNameInput, setTeamNameInput] = useState("");
   const [localAnswers, setLocalAnswers] = useState({});
+  const [showGuide, setShowGuide] = useState(false); // for reference access from picker
+
+  const acknowledgeGuide = () => {
+    setGuideViewed(true);
+    try { localStorage.setItem("lc26_guide_viewed", "true"); } catch {}
+  };
 
   // Hydrate answers when session active
   useEffect(() => {
@@ -1006,6 +1076,32 @@ function WorkshopTab({dm, admin}) {
     lines.push("═══════════════════════════════════════════════════════════════");
     lines.push("  LC26 WORKSHOP — TEAM RESPONSES FOR GRADING");
     lines.push(`  Exported: ${new Date().toLocaleString()}`);
+    lines.push("═══════════════════════════════════════════════════════════════");
+
+    // Course Guide / Grading context preamble
+    lines.push("\n" + COURSE_GUIDE.tagline);
+    lines.push("Public Club Case Study Contest\n");
+    lines.push("EXERCISE OVERVIEW");
+    lines.push(COURSE_GUIDE.intro);
+    lines.push("");
+    lines.push(COURSE_GUIDE.quote);
+    lines.push("\n\nWHAT STRONG RESPONSES INCLUDE");
+    COURSE_GUIDE.criteria.forEach(c => {
+      lines.push(`    ${c.icon}  ${c.label} — ${c.text}`);
+    });
+    lines.push("\n\nSCORECARD — HOW THE ROUND IS GRADED");
+    lines.push("Each hole (question) is scored 1–5. Par is 3. Lowest total wins.\n");
+    COURSE_GUIDE.scorecard.forEach(s => {
+      lines.push(`  ${s.score} · ${s.term} (${s.toPar})`);
+      lines.push(`      ${s.desc}`);
+    });
+    lines.push("\nTHE ROUND");
+    lines.push(`  Par for the course:  ${COURSE_GUIDE.round.par}`);
+    lines.push(`  Best possible score: ${COURSE_GUIDE.round.best}`);
+    lines.push(`  Worst possible score: ${COURSE_GUIDE.round.worst}`);
+    lines.push("  Score to par is shown as +/– on each team's scorecard. Lowest score wins.");
+    lines.push("\n═══════════════════════════════════════════════════════════════");
+    lines.push("  TEAM RESPONSES");
     lines.push("═══════════════════════════════════════════════════════════════\n");
 
     CASE_LIST.forEach(cl => {
@@ -1050,6 +1146,89 @@ function WorkshopTab({dm, admin}) {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+  // ── Course Guide (forced gate before first use, or on-demand) ──
+  const renderCourseGuide = (isGate) => (
+    <div style={{padding:"24px 20px",maxWidth:680,margin:"0 auto"}}>
+      <div style={{textAlign:"center",marginBottom:24}}>
+        <div style={{fontSize:14,letterSpacing:4,textTransform:"uppercase",color:"var(--goldDim)",fontWeight:600,marginBottom:8}}>{COURSE_GUIDE.tagline}</div>
+        <h2 style={{fontFamily:"var(--ff)",fontSize:26,color:"var(--gold)",fontWeight:800,marginBottom:4}}>The Course Guide</h2>
+        <div style={{fontFamily:"var(--ff)",fontStyle:"italic",fontSize:14,color:"var(--dim)"}}>Public Club Case Study Contest</div>
+      </div>
+
+      <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:14,padding:20,marginBottom:20}}>
+        <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1.5,marginBottom:10}}>Welcome to the Round</div>
+        <p style={{fontSize:15,color:"var(--txt)",lineHeight:1.6,marginBottom:12}}>{COURSE_GUIDE.intro}</p>
+        <p style={{fontSize:14,color:"var(--goldDim)",lineHeight:1.6,fontStyle:"italic"}}>{COURSE_GUIDE.quote}</p>
+      </div>
+
+      <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:14,padding:20,marginBottom:20}}>
+        <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1.5,marginBottom:12}}>What We're Looking For</div>
+        <p style={{fontSize:13,color:"var(--dim)",marginBottom:14,fontStyle:"italic"}}>Strong responses go beyond restating the numbers. We want to see:</p>
+        {COURSE_GUIDE.criteria.map((c, i) => (
+          <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"8px 0",borderBottom:i<COURSE_GUIDE.criteria.length-1?"1px solid var(--border)":"none"}}>
+            <span style={{color:"var(--gold)",fontSize:16,fontWeight:700,flexShrink:0,marginTop:2}}>{c.icon}</span>
+            <div>
+              <span style={{color:"var(--gold)",fontWeight:700,fontSize:15}}>{c.label}</span>
+              <span style={{color:"var(--txt)",fontSize:15}}> — {c.text}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:14,padding:20,marginBottom:20}}>
+        <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1.5,marginBottom:4}}>Scorecard</div>
+        <div style={{fontSize:13,color:"var(--dim)",marginBottom:12}}>Each hole is scored 1–5. Par is 3. Lowest total wins.</div>
+        <div style={{display:"grid",gap:6}}>
+          {COURSE_GUIDE.scorecard.map(s => (
+            <div key={s.score} style={{display:"grid",gridTemplateColumns:"40px 140px 1fr",gap:10,padding:"8px 10px",background:"var(--input)",borderRadius:8,border:"1px solid var(--border)",alignItems:"start"}}>
+              <div style={{fontFamily:"var(--ff)",fontSize:22,fontWeight:800,color:"var(--gold)",textAlign:"center"}}>{s.score}</div>
+              <div>
+                <div style={{fontFamily:"var(--ff)",fontSize:14,color:"var(--gold)",fontWeight:700}}>{s.term}</div>
+                <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600}}>{s.toPar}</div>
+              </div>
+              <div style={{fontSize:12,color:"var(--txt)",lineHeight:1.45}}>{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:14,padding:20,marginBottom:24}}>
+        <div style={{fontSize:12,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1.5,marginBottom:10}}>The Round</div>
+        <div style={{fontSize:14,color:"var(--txt)",lineHeight:1.8}}>
+          <div><span style={{color:"var(--goldDim)",fontWeight:600}}>Par for the course:</span> {COURSE_GUIDE.round.par}</div>
+          <div><span style={{color:"var(--goldDim)",fontWeight:600}}>Best possible score:</span> {COURSE_GUIDE.round.best}</div>
+          <div><span style={{color:"var(--goldDim)",fontWeight:600}}>Worst possible score:</span> {COURSE_GUIDE.round.worst}</div>
+        </div>
+        <p style={{fontSize:12,color:"var(--dim)",marginTop:10,fontStyle:"italic"}}>Score to par is shown as +/– on each team's scorecard. Lowest score wins.</p>
+      </div>
+
+      <div style={{textAlign:"center"}}>
+        <p style={{fontFamily:"var(--ff)",fontStyle:"italic",fontSize:15,color:"var(--goldDim)",marginBottom:16}}>
+          Remember: in golf and in finance, precision beats power.<br/>Show your work, cite the numbers, and make it count. ⛳
+        </p>
+        {isGate ? (
+          <button onClick={acknowledgeGuide} className="btn-gold" style={{padding:"14px 40px",fontSize:17}}>
+            Ready to Play →
+          </button>
+        ) : (
+          <button onClick={() => setShowGuide(false)} className="btn-gold" style={{padding:"12px 32px",fontSize:15}}>
+            Back to Cases
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
+  // Force the guide on first use — unless admin (they need to manage without being blocked)
+  if (!admin && !guideViewed && !session) {
+    return renderCourseGuide(true);
+  }
+
+  // On-demand guide access (from picker)
+  if (showGuide) {
+    return renderCourseGuide(false);
+  }
 
   // ── Prompt for team name after case pick ──
   if (pickingCase) {
@@ -1150,6 +1329,11 @@ function WorkshopTab({dm, admin}) {
           <p style={{marginTop:24,fontSize:12,color:"var(--mute)",fontStyle:"italic"}}>
             Multiple teams can work on the same case — you'll enter your team name after selecting.
           </p>
+          <div style={{marginTop:16}}>
+            <button onClick={() => setShowGuide(true)} className="btn-sm" style={{padding:"8px 18px",fontSize:13,borderColor:"var(--goldDim)",color:"var(--goldDim)"}}>
+              📖 Review Course Guide
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -1273,7 +1457,7 @@ function Welcome({onEnter}) {
         <QRCode size={220} />
       </div>
       <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:28}}>
-        {["📋 Agenda","💬 Q&A","🎉 Shoutouts","📸 Photos","📊 Polls","💡 Takeaways","🎓 Workshop"].map(x => (
+        {["📋 Agenda","💬 Q&A","🎉 Shoutouts","📸 Photos","📊 Polls","💡 Takeaways"].map(x => (
           <span key={x} style={{padding:"8px 18px",borderRadius:20,background:"var(--glow)",border:"1px solid var(--border)",fontSize:16,fontWeight:500}}>{x}</span>
         ))}
       </div>
@@ -1299,6 +1483,8 @@ function App() {
   const phRaw = useFirebase("photos");
   const poRaw = useFirebase("polls");
   const tkRaw = useFirebase("takeaways");
+  const settingsRaw = useFirebase("settings");
+  const workshopVisible = settingsRaw?.workshopVisible === true;
 
   const cnt = {
     q: toArr(qRaw).length,
@@ -1310,15 +1496,22 @@ function App() {
 
   const tryPin = () => { if(pin===ADMIN_PIN){setAdmin(true);setShowPin(false);setPin("");}else setPin(""); };
 
-  const tabs = [
+  // If workshop becomes hidden and user was on it (and isn't admin), bump them back
+  useEffect(() => {
+    if (tab === "workshop" && !workshopVisible && !admin) setTab("agenda");
+  }, [tab, workshopVisible, admin]);
+
+  const allTabs = [
     {id:"agenda",label:"Agenda",icon:"📋",count:0},
     {id:"questions",label:"Q&A",icon:"💬",count:cnt.q},
     {id:"comments",label:"Shoutouts",icon:"🎉",count:cnt.c},
     {id:"photos",label:"Photos",icon:"📸",count:cnt.p},
     {id:"polls",label:"Polls",icon:"📊",count:cnt.po},
     {id:"takeaways",label:"Takeaways",icon:"💡",count:cnt.tk},
-    {id:"workshop",label:"Workshop",icon:"🎓",count:0},
+    {id:"workshop",label:"Workshop",icon:"🎓",count:0,adminOnly:!workshopVisible},
   ];
+  // Hide workshop from non-admins when not visible
+  const tabs = allTabs.filter(t => !t.adminOnly || admin);
 
   if (scr==="welcome") return <Welcome onEnter={() => setScr("main")} />;
 
@@ -1347,8 +1540,9 @@ function App() {
       {!showExp && (
         <div style={{display:"flex",gap:2,borderBottom:"1px solid var(--border)",padding:"0 6px",overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
           {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)} className={`tab-btn ${tab===t.id?"active":""}`}>
+            <button key={t.id} onClick={() => setTab(t.id)} className={`tab-btn ${tab===t.id?"active":""}`} title={t.adminOnly?"Hidden from attendees — admin only":""}>
               {t.icon} {t.label}
+              {t.adminOnly && <span style={{marginLeft:4,fontSize:10,color:"var(--red)"}}>🔒</span>}
               {t.count>0 && <span className="tab-count" style={{background:tab===t.id?"var(--gold)":"var(--border)",color:tab===t.id?"var(--bg)":"var(--dim)"}}>{t.count}</span>}
             </button>
           ))}
