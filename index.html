@@ -692,6 +692,7 @@ function PTab({dm, admin}) {
     try { return JSON.parse(localStorage.getItem("lc26_liked") || "{}"); } catch { return {}; }
   });
   const fr = useRef();
+  const frLib = useRef();
 
   const upload = async e => {
     const f = e.target.files?.[0]; if(!f) return;
@@ -699,7 +700,9 @@ function PTab({dm, admin}) {
     try {
       const data = await compress(f);
       fbPush("photos", { data, caption: cap.trim(), name: nm.trim()||"Anonymous", ts: Date.now(), likes: 0 });
-      setCap(""); fr.current.value = "";
+      setCap("");
+      if (fr.current) fr.current.value = "";
+      if (frLib.current) frLib.current.value = "";
     } catch(err) { console.error(err); }
     setUploading(false);
   };
@@ -741,9 +744,15 @@ function PTab({dm, admin}) {
             <input value={cap} onChange={e=>setCap(e.target.value)} placeholder="Caption" className="field" style={{flex:1,minWidth:100}} />
           </div>
           <input ref={fr} type="file" accept="image/*" capture="environment" onChange={upload} style={{display:"none"}} />
-          <button onClick={() => fr.current?.click()} disabled={uploading} className="btn-gold" style={{opacity:uploading?.6:1}}>
-            {uploading ? "Uploading..." : "📷 Upload Photo"}
-          </button>
+          <input ref={frLib} type="file" accept="image/*" onChange={upload} style={{display:"none"}} />
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+            <button onClick={() => fr.current?.click()} disabled={uploading} className="btn-gold" style={{opacity:uploading?.6:1,flex:"1 1 140px"}}>
+              {uploading ? "Uploading..." : "📷 Take Photo"}
+            </button>
+            <button onClick={() => frLib.current?.click()} disabled={uploading} className="btn-sm" style={{opacity:uploading?.6:1,flex:"1 1 140px",padding:"12px 20px",fontSize:14,borderColor:"var(--gold)",color:"var(--gold)"}}>
+              🖼️ Choose from Library
+            </button>
+          </div>
         </div>
       )}
       <div style={{display:"grid",gridTemplateColumns:dm?"repeat(auto-fill,minmax(220px,1fr))":"repeat(auto-fill,minmax(130px,1fr))",gap:8,padding:12,maxHeight:dm?"calc(100vh - 240px)":360,overflowY:"auto"}}>
