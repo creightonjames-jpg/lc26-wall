@@ -131,31 +131,100 @@ const EJ = ["🔥", "👏", "💡", "🎯"];
 const QR_URL = "https://creightonjames-jpg.github.io/lc26-wall/";
 
 const AGENDA = [
-  { day:1, date:"2026-04-27", label:"Mon, Apr 27", title:"Arrival & Welcome", loc:"The Nelson Sports Club",
-    ev:[{t:"18:00",e:"21:00",n:"Warm Welcome",d:"Fireside Gathering, Reception and Networking",i:"🔥"}]},
-  { day:2, date:"2026-04-28", label:"Tue, Apr 28", title:"Partners + Show Ready", loc:"Lincoln Center Conference Room",
+  { day:1, date:"2026-04-27", label:"Mon, Apr 27", title:"Arrival & Welcome", loc:"The Nelson Golf & Sports Club",
+    ev:[{t:"18:00",e:"21:00",n:"Welcome Reception",d:"Fireside gathering · Drinks, food, and networking with colleagues across the portfolio",i:"🔥"}]},
+  { day:2, date:"2026-04-28", label:"Tue, Apr 28", title:"Show Ready — Excellence in the Member Experience", loc:"Lincoln Center · Building Three, Third Floor",
     ev:[
-      {t:"09:00",e:"09:40",n:"Good Morning",d:"Bruce Gerlander",i:"🎬"},
-      {t:"09:40",e:"11:15",n:"State of the Company",d:"Jim Hinckley, Doug Howe & Greg Adair",i:"📊"},
-      {t:"11:15",e:"11:30",n:"Break",d:"",i:"☕"},
-      {t:"11:30",e:"12:30",n:"Show Ready",d:"Todd Keefer & Donny Darville",i:"⭐"},
-      {t:"12:30",e:"13:30",n:"Lunch",d:"",i:"🍽️"},
-      {t:"13:30",e:"16:30",n:"Show Ready (cont.)",d:"",i:"⭐"},
-      {t:"16:30",e:"17:15",n:"PSA Time",d:"",i:"📢"},
+      {t:"08:45",e:"09:00",n:"Arrive at Conference Center",d:"",i:"📍"},
+      {t:"09:00",e:"09:40",n:"Good Morning & Opening",d:"Bruce Gerlander · A warm welcome and framing for the week ahead",i:"🎬"},
+      {t:"09:40",e:"11:15",n:"State of the Company — Vision Casting",d:"Jim Hinckley, Doug Howe & Greg Adair · Where we have been, where we are today, where we are going · 2025 results · Q&A",i:"📊"},
+      {t:"11:15",e:"11:30",n:"Morning Break",d:"Snacks & refreshments",i:"☕"},
+      {t:"11:30",e:"12:30",n:"Show Ready — Tangible vs. Intangible Excellence",d:"Todd Keefer, Donny Darville & Carol Ruskowski · What members see vs. what members feel · Code Blues across private and public clubs",i:"⭐"},
+      {t:"12:30",e:"13:45",n:"Lunch",d:"",i:"🍽️"},
+      {t:"13:45",e:"15:00",n:"Show Ready — Real World Applications",d:"Danny Meyer on hospitality as a standard · 'Favorite Place' (Louie Unga) · BRDY Program (Troy Thivierge) · Digital Show Ready (Amy Spittle)",i:"🌍"},
+      {t:"15:00",e:"16:00",n:"Breakout — Applying the Standard",d:"Small group work: where Show Ready is strong at your club, where it slips, and what you'll do about it",i:"🎯"},
+      {t:"16:00",e:"17:15",n:"Show Ready Wrap-Up",d:"Synthesis and commitments from the day",i:"📝"},
       {t:"17:15",e:"17:15",n:"End of Day",d:"",i:"🏁"},
-      {t:"18:00",e:"21:00",n:"Dinner & Entertainment",d:"Pinstack",i:"🎳"}]},
-  { day:3, date:"2026-04-29", label:"Wed, Apr 29", title:"Financial Stewardship + People Development", loc:"Lincoln Center Conference Room",
+      {t:"18:00",e:"21:00",n:"Depart for Dinner & Entertainment",d:"PINSTACK · Wear comfortable clothing, socks, and closed-toe shoes",i:"🎳"}]},
+  { day:3, date:"2026-04-29", label:"Wed, Apr 29", title:"Financial Stewardship & People Development", loc:"Lincoln Center · Building Three, Third Floor",
     ev:[
-      {t:"09:00",e:"09:15",n:"Good Morning / Day 1 Recap",d:"Bruce Gerlander",i:"☀️"},
-      {t:"09:15",e:"12:00",n:"Financial Stewardship Fundamentals",d:"Mike Akeroyd",i:"💰"},
-      {t:"12:00",e:"12:15",n:"Safety Video #3 · Team Award #4",d:"",i:"🏆"},
+      {t:"08:45",e:"09:00",n:"Arrive at Conference Center",d:"",i:"📍"},
+      {t:"09:00",e:"09:15",n:"Good Morning & Day One Recap",d:"Bruce Gerlander · Reflections, themes, and a look ahead",i:"☀️"},
+      {t:"09:15",e:"10:00",n:"Fundamentals of Financial Stewardship",d:"Mike Akeroyd · The basics of running a disciplined club P&L · Where the numbers tell the truth",i:"💰"},
+      {t:"10:00",e:"11:00",n:"Flex & Flow Workshop — Smart Adjustments in Practice",d:"James Hinckley & Chris May · Reading the month and adjusting in real time · Case work with real portfolio scenarios",i:"🎓"},
+      {t:"11:00",e:"11:40",n:"Smart Spending — Purchasing",d:"Bryan Stromme, Mike Akeroyd & Kelly McColl · Top cost-control opportunities · Vendor management and negotiation fundamentals",i:"🛒"},
+      {t:"11:40",e:"12:15",n:"Smart Spending — Labor Management",d:"Mike Akeroyd · Labor as your largest lever, and how to pull it well",i:"👥"},
       {t:"12:15",e:"13:15",n:"Lunch",d:"",i:"🍽️"},
-      {t:"13:15",e:"16:45",n:"People Development",d:"Bruce Gerlander & Jim Creighton",i:"🌱"},
-      {t:"16:45",e:"17:30",n:"Closing Session",d:"",i:"🎬"},
-      {t:"17:30",e:"17:30",n:"End of Conference",d:"",i:"🏁"},
+      {t:"13:15",e:"13:45",n:"People Development — Scout, Shaper, Steward",d:"Bruce Gerlander & Jim Creighton · A shared language for developing our teams · Where your people are, and where they're going",i:"🌱"},
+      {t:"13:45",e:"14:15",n:"Best First Day Ever — Experience by Design",d:"Alyssa Baker · What the first day on the job should feel like · Designing onboarding that sticks",i:"🚀"},
+      {t:"14:15",e:"15:05",n:"Breakout — Scout",d:"Identifying and recruiting the right people",i:"🔍"},
+      {t:"15:05",e:"15:55",n:"Breakout — Shaper",d:"Developing the team you already have",i:"🛠️"},
+      {t:"15:55",e:"16:45",n:"Breakout — Steward",d:"Holding the standard and building the bench",i:"🛡️"},
+      {t:"16:45",e:"17:15",n:"Closing Session",d:"Reflections from the week · A look toward the year ahead · Closing video",i:"🎬"},
+      {t:"17:15",e:"17:15",n:"End of Conference",d:"",i:"🏁"},
       {t:"18:00",e:"18:30",n:"Depart for Dinner",d:"",i:"🚐"},
-      {t:"18:30",e:"21:00",n:"Dinner",d:"Oak'd BBQ",i:"🍖"}]}
+      {t:"18:30",e:"21:00",n:"Dinner",d:"Oak'd BBQ",i:"🍖"}]},
+  { day:4, date:"2026-04-30", label:"Thu, Apr 30", title:"Departures", loc:"",
+    ev:[{t:"00:00",e:"23:59",n:"Safe Travels Home",d:"Take what you learned this week back to your club and your team. It was an honor to learn with you.",i:"✈️"}]}
 ];
+
+// ─── VENUES & LOGISTICS ───
+const VENUES = {
+  hotel: {
+    name: "Hilton Dallas Lincoln Centre",
+    addr: "5410 LBJ Freeway, Dallas, TX 75240",
+    phone: "(972) 934-8400",
+    web: "hilton.com/en/hotels/dfwlthh-hilton-dallas-lincoln-centre",
+    note: "The Lincoln Centre Complex includes the Hilton Hotel and three office towers."
+  },
+  cgpOffice: {
+    name: "Century Golf Partners Office",
+    sub: "Building Three, 14th Floor",
+    addr: "5430 Lyndon B Johnson Fwy, Dallas, TX 75240",
+    note: "Knock on the glass doors for entry."
+  },
+  conference: {
+    name: "Leadership Conference Sessions",
+    sub: "Building Three, Third Floor Conference Room",
+    note: "Elevators are accessible from 7:00 AM to 6:00 PM. For access or questions, contact Yolanda Nuncio at (214) 952-8269."
+  },
+  evening: [
+    {
+      name: "The Nelson Golf & Sports Club",
+      when: "Monday, April 27 at 6:00 PM",
+      addr: "4200 N. MacArthur Blvd., Irving, TX 75038",
+      phone: "(972) 717-2525",
+      web: "thenelsongolfandsportsclub.com",
+      dress: "Country Club Casual"
+    },
+    {
+      name: "PINSTACK",
+      when: "Tuesday, April 28 at 6:30 PM",
+      addr: "6205 Dallas Parkway, Plano, TX 75024",
+      phone: "(972) 781-2695",
+      web: "pinstackbowl.com",
+      desc: "Bowling, rock climbing wall, laser tag, high ropes course, and more.",
+      dress: "Casual · Comfortable clothing, socks, and closed-toe shoes"
+    },
+    {
+      name: "Oak'd BBQ",
+      when: "Wednesday, April 29 at 6:30 PM",
+      addr: "4525 Belt Line Rd., Addison, TX 75001",
+      phone: "(214) 242-8671",
+      web: "oakdbbq.com",
+      dress: "Casual"
+    }
+  ],
+  dining: [
+    { loc: "Hotel", name: "L'Express / Starbucks", hours: "6:00 AM – 4:00 PM" },
+    { loc: "Hotel", name: "Midtown Local Restaurant (Breakfast)", hours: "6:30 – 11:00 AM" },
+    { loc: "Hotel", name: "H Bar Lounge (Appetizers)", hours: "4:00 – 11:00 PM" },
+    { loc: "Building One", name: "Centre Cup Coffee Bar", hours: "7:00 AM – 2:00 PM" },
+    { loc: "Building Two", name: "Centre Kitchen (Breakfast & Lunch)", hours: "7:30 AM – 2:00 PM" },
+    { loc: "Building Three", name: "Centre Cup Coffee Bar", hours: "7:00 AM – 2:00 PM" },
+    { loc: "Building Three", name: "The Market (Beer, Wine, Snacks)", hours: "7:30 AM – 5:00 PM" },
+  ]
+};
 
 // ─── WORKSHOP CASES ───
 const CASE_LIST = [
@@ -327,6 +396,7 @@ function QRCode({size=180}) {
 function AgendaTab({dm}) {
   const [now, setNow] = useState(new Date());
   const [day, setDay] = useState(null);
+  const [showVenues, setShowVenues] = useState(false);
   const rxRaw = useFirebase("reactions");
   const rx = rxRaw || {};
   const [reacted, setReacted] = useState(() => {
@@ -388,15 +458,21 @@ function AgendaTab({dm}) {
         ) : <div style={{fontSize:17,color:"var(--dim)",fontStyle:"italic"}}>Conference complete — thank you!</div>}
       </div>
 
-      <div style={{display:"flex",gap:5,padding:"12px 20px",borderBottom:"1px solid var(--border)",overflowX:"auto"}}>
+      <div style={{display:"flex",gap:5,padding:"12px 20px",borderBottom:"1px solid var(--border)",overflowX:"auto",alignItems:"center"}}>
         {AGENDA.map(d => (
-          <button key={d.day} onClick={() => setDay(d.day)} className={`pill ${d.day===day?"active":""}`} style={{position:"relative"}}>
+          <button key={d.day} onClick={() => {setDay(d.day);setShowVenues(false);}} className={`pill ${d.day===day && !showVenues?"active":""}`} style={{position:"relative",flexShrink:0}}>
             Day {d.day}{dm ? ` — ${d.title}` : ""}
             {d.date===now.toISOString().slice(0,10) && <span style={{position:"absolute",top:-3,right:-3,width:6,height:6,borderRadius:"50%",background:"var(--red)"}} />}
           </button>
         ))}
+        <div style={{width:1,height:24,background:"var(--border)",margin:"0 4px",flexShrink:0}} />
+        <button onClick={() => setShowVenues(!showVenues)} className={`pill ${showVenues?"active":""}`} style={{flexShrink:0}}>
+          📍 Venues & Logistics
+        </button>
       </div>
 
+      {!showVenues ? (
+        <>
       <div style={{padding:"12px 20px",borderBottom:"1px solid var(--border)"}}>
         <div style={{fontFamily:"var(--ff)",fontSize:dm?24:18,color:"var(--gold)",fontWeight:700}}>{dd.label}</div>
         <div style={{fontSize:18,color:"var(--dim)"}}>📍 {dd.loc} · 🎯 {dd.title}</div>
@@ -432,6 +508,67 @@ function AgendaTab({dm}) {
           );
         })}
       </div>
+        </>
+      ) : (
+        <div style={{maxHeight:dm?"calc(100vh - 280px)":420,overflowY:"auto",padding:"16px 20px"}}>
+          {/* Conference Venues */}
+          <div style={{marginBottom:24}}>
+            <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,marginBottom:10}}>📍 Conference Venues</div>
+
+            <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,padding:16,marginBottom:10}}>
+              <div style={{fontFamily:"var(--ff)",fontSize:dm?20:17,color:"var(--gold)",fontWeight:700}}>🏨 {VENUES.hotel.name}</div>
+              <div style={{fontSize:14,color:"var(--txt)",marginTop:4}}>{VENUES.hotel.addr}</div>
+              <div style={{fontSize:14,color:"var(--dim)",marginTop:4}}>{VENUES.hotel.phone} · <a href={`https://${VENUES.hotel.web}`} target="_blank" rel="noopener" style={{color:"var(--goldDim)",textDecoration:"underline"}}>{VENUES.hotel.web}</a></div>
+              <div style={{fontSize:13,color:"var(--mute)",marginTop:8,fontStyle:"italic"}}>{VENUES.hotel.note}</div>
+            </div>
+
+            <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,padding:16,marginBottom:10}}>
+              <div style={{fontFamily:"var(--ff)",fontSize:dm?20:17,color:"var(--gold)",fontWeight:700}}>🎯 {VENUES.conference.name}</div>
+              <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,marginTop:2}}>{VENUES.conference.sub}</div>
+              <div style={{fontSize:13,color:"var(--mute)",marginTop:8,lineHeight:1.5}}>{VENUES.conference.note}</div>
+            </div>
+
+            <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,padding:16}}>
+              <div style={{fontFamily:"var(--ff)",fontSize:dm?20:17,color:"var(--gold)",fontWeight:700}}>🏢 {VENUES.cgpOffice.name}</div>
+              <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,marginTop:2}}>{VENUES.cgpOffice.sub}</div>
+              <div style={{fontSize:14,color:"var(--txt)",marginTop:4}}>{VENUES.cgpOffice.addr}</div>
+              <div style={{fontSize:13,color:"var(--mute)",marginTop:8,fontStyle:"italic"}}>{VENUES.cgpOffice.note}</div>
+            </div>
+          </div>
+
+          {/* Evening Venues */}
+          <div style={{marginBottom:24}}>
+            <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,marginBottom:10}}>🌆 Evening Venues</div>
+            {VENUES.evening.map((v, i) => (
+              <div key={i} style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,padding:16,marginBottom:10}}>
+                <div style={{fontFamily:"var(--ff)",fontSize:dm?20:17,color:"var(--gold)",fontWeight:700}}>{v.name}</div>
+                <div style={{fontSize:13,color:"var(--goldDim)",fontWeight:600,marginTop:2}}>{v.when}</div>
+                <div style={{fontSize:14,color:"var(--txt)",marginTop:6}}>{v.addr}</div>
+                <div style={{fontSize:14,color:"var(--dim)",marginTop:4}}>{v.phone} · <a href={`https://${v.web}`} target="_blank" rel="noopener" style={{color:"var(--goldDim)",textDecoration:"underline"}}>{v.web}</a></div>
+                {v.desc && <div style={{fontSize:13,color:"var(--mute)",marginTop:8,lineHeight:1.5}}>{v.desc}</div>}
+                <div style={{display:"inline-block",marginTop:8,padding:"3px 10px",background:"var(--glow)",border:"1px solid var(--goldDim)",borderRadius:6,fontSize:12,color:"var(--gold)",fontWeight:600}}>👔 {v.dress}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Dining Options */}
+          <div>
+            <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,marginBottom:10}}>🍽️ Dining Options at Lincoln Centre</div>
+            <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,overflow:"hidden"}}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 2fr 1.2fr",gap:0,background:"var(--input)",padding:"10px 14px",fontSize:12,fontWeight:600,color:"var(--goldDim)",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid var(--border)"}}>
+                <div>Location</div><div>Venue</div><div style={{textAlign:"right"}}>Hours</div>
+              </div>
+              {VENUES.dining.map((d, i) => (
+                <div key={i} style={{display:"grid",gridTemplateColumns:"1fr 2fr 1.2fr",gap:0,padding:"10px 14px",fontSize:14,borderBottom:i<VENUES.dining.length-1?"1px solid var(--border)":"none"}}>
+                  <div style={{color:"var(--goldDim)",fontWeight:600}}>{d.loc}</div>
+                  <div style={{color:"var(--txt)"}}>{d.name}</div>
+                  <div style={{color:"var(--dim)",textAlign:"right",fontVariantNumeric:"tabular-nums"}}>{d.hours}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -551,6 +688,9 @@ function PTab({dm, admin}) {
   const photos = toArr(raw).sort((a,b) => b.ts - a.ts);
   const [uploading, setUploading] = useState(false);
   const [cap, setCap] = useState(""); const [nm, setNm] = useState(""); const [vp, setVp] = useState(null);
+  const [liked, setLiked] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("lc26_liked") || "{}"); } catch { return {}; }
+  });
   const fr = useRef();
 
   const upload = async e => {
@@ -558,10 +698,22 @@ function PTab({dm, admin}) {
     setUploading(true);
     try {
       const data = await compress(f);
-      fbPush("photos", { data, caption: cap.trim(), name: nm.trim()||"Anonymous", ts: Date.now() });
+      fbPush("photos", { data, caption: cap.trim(), name: nm.trim()||"Anonymous", ts: Date.now(), likes: 0 });
       setCap(""); fr.current.value = "";
     } catch(err) { console.error(err); }
     setUploading(false);
+  };
+
+  const toggleLike = (e, photo) => {
+    e.stopPropagation();
+    const key = photo._key;
+    const isLiked = liked[key];
+    const newCount = (photo.likes || 0) + (isLiked ? -1 : 1);
+    fbUpdate(`photos/${key}`, { likes: Math.max(0, newCount) });
+    const nl = {...liked};
+    if (isLiked) delete nl[key]; else nl[key] = true;
+    setLiked(nl);
+    try { localStorage.setItem("lc26_liked", JSON.stringify(nl)); } catch {}
   };
 
   const deletePhoto = (key) => {
@@ -596,16 +748,31 @@ function PTab({dm, admin}) {
       )}
       <div style={{display:"grid",gridTemplateColumns:dm?"repeat(auto-fill,minmax(220px,1fr))":"repeat(auto-fill,minmax(130px,1fr))",gap:8,padding:12,maxHeight:dm?"calc(100vh - 240px)":360,overflowY:"auto"}}>
         {photos.length===0 && <p style={{gridColumn:"1/-1",textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No photos yet!</p>}
-        {photos.map(p => (
-          <div key={p._key} onClick={() => setVp(p)} style={{borderRadius:8,overflow:"hidden",cursor:"pointer",border:"1px solid var(--border)",background:"var(--input)",transition:"transform .2s"}}
-            onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
-            <img src={p.data} alt="" style={{width:"100%",aspectRatio:"1",objectFit:"cover",display:"block"}} />
-            <div style={{padding:"5px 7px"}}>
-              {p.caption && <div style={{fontSize:19,color:"var(--txt)"}}>{p.caption}</div>}
-              <div style={{fontSize:17,color:"var(--mute)"}}><span style={{color:"var(--goldDim)"}}>{p.name}</span> · {ago(p.ts)}</div>
+        {photos.map(p => {
+          const isLiked = !!liked[p._key];
+          const likeCount = p.likes || 0;
+          return (
+            <div key={p._key} onClick={() => setVp(p)} style={{borderRadius:8,overflow:"hidden",cursor:"pointer",border:"1px solid var(--border)",background:"var(--input)",transition:"transform .2s",position:"relative"}}
+              onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+              <img src={p.data} alt="" style={{width:"100%",aspectRatio:"1",objectFit:"cover",display:"block"}} />
+              <button onClick={(e) => toggleLike(e, p)}
+                style={{position:"absolute",top:6,right:6,padding:"4px 8px",
+                  background:isLiked?"rgba(201,165,78,0.95)":"rgba(12,26,15,0.85)",
+                  border:`1px solid ${isLiked?"var(--gold)":"var(--border)"}`,
+                  borderRadius:14,color:isLiked?"var(--bg)":"var(--gold)",
+                  cursor:"pointer",fontSize:13,fontWeight:700,
+                  display:"flex",alignItems:"center",gap:4,
+                  backdropFilter:"blur(4px)"}}>
+                <span>👍</span>
+                {likeCount > 0 && <span>{likeCount}</span>}
+              </button>
+              <div style={{padding:"5px 7px"}}>
+                {p.caption && <div style={{fontSize:19,color:"var(--txt)"}}>{p.caption}</div>}
+                <div style={{fontSize:17,color:"var(--mute)"}}><span style={{color:"var(--goldDim)"}}>{p.name}</span> · {ago(p.ts)}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       {vp && (
         <div className="overlay" onClick={() => setVp(null)}>
@@ -613,6 +780,15 @@ function PTab({dm, admin}) {
             <img src={vp.data} alt="" style={{maxWidth:"100%",maxHeight:"70vh",borderRadius:12}} />
             <div style={{marginTop:8,color:"var(--txt)"}}>{vp.caption && <p style={{fontSize:18}}>{vp.caption}</p>}<p style={{fontSize:15,color:"var(--dim)",margin:"4px 0 0"}}>{vp.name} · {ago(vp.ts)}</p></div>
             <div style={{marginTop:14,display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+              <button onClick={(e) => toggleLike(e, vp)} className="btn-sm" style={{
+                padding:"10px 20px",fontSize:15,
+                borderColor:liked[vp._key]?"var(--gold)":"var(--border)",
+                color:liked[vp._key]?"var(--gold)":"var(--dim)",
+                background:liked[vp._key]?"var(--glow)":"transparent",
+                fontWeight:600
+              }}>
+                👍 {liked[vp._key] ? "Liked" : "Like"} {(vp.likes||0) > 0 && `· ${vp.likes||0}`}
+              </button>
               <button onClick={() => setVp(null)} className="btn-gold">Close</button>
               {admin && (
                 <>
@@ -851,6 +1027,7 @@ function AdminModal({onClose}) {
         localStorage.removeItem("lc26_pollvotes");
         localStorage.removeItem("lc26_workshop");
         localStorage.removeItem("lc26_guide_viewed");
+        localStorage.removeItem("lc26_liked");
       } catch {}
       setConfirmReset(false);
       alert("All data has been reset.");
@@ -864,6 +1041,7 @@ function AdminModal({onClose}) {
       localStorage.removeItem("lc26_pollvotes");
       localStorage.removeItem("lc26_workshop");
       localStorage.removeItem("lc26_guide_viewed");
+      localStorage.removeItem("lc26_liked");
     } catch {}
     alert("Your local history has been cleared. Refresh the page to see the effect.");
   };
