@@ -132,7 +132,10 @@ const QR_URL = "https://creightonjames-jpg.github.io/lc26-wall/";
 
 const AGENDA = [
   { day:1, date:"2026-04-27", label:"Mon, Apr 27", title:"Arrival & Welcome", loc:"The Nelson Golf & Sports Club",
-    ev:[{t:"18:00",e:"21:00",n:"Welcome Reception",d:"Fireside gathering · Drinks, food, and networking with colleagues across the portfolio",i:"🔥"}]},
+    ev:[
+      {t:"17:15",e:"17:30",n:"Carpool Meetup",d:"Hilton Lincoln Centre Valet · Depart together for The Nelson",i:"🚗"},
+      {t:"18:30",e:"21:00",n:"Welcome Reception",d:"Fireside gathering · Drinks, food, and networking with colleagues across the portfolio",i:"🔥"}
+    ]},
   { day:2, date:"2026-04-28", label:"Tue, Apr 28", title:"Show Ready — Excellence in the Member Experience", loc:"Lincoln Center · Building Three, Third Floor",
     ev:[
       {t:"08:45",e:"09:00",n:"Arrive at Conference Center",d:"",i:"📍"},
@@ -191,7 +194,7 @@ const VENUES = {
   evening: [
     {
       name: "The Nelson Golf & Sports Club",
-      when: "Monday, April 27 at 6:00 PM",
+      when: "Monday, April 27 at 6:30 PM (Carpool meetup at Hilton valet 5:15 PM)",
       addr: "4200 N. MacArthur Blvd., Irving, TX 75038",
       phone: "(972) 717-2525",
       web: "thenelsongolfandsportsclub.com",
@@ -230,7 +233,7 @@ const VENUES = {
 const CASE_LIST = [
   { id: "public1", label: "Public Case 1", subtitle: "The Flow Course", available: true },
   { id: "public2", label: "Public Case 2", subtitle: "The Flex Course", available: true },
-  { id: "private1", label: "Private Case 1", subtitle: "Coming Soon", available: false },
+  { id: "private1", label: "Private Case 1", subtitle: "The Flow Course", available: true },
   { id: "private2", label: "Private Case 2", subtitle: "The Flex Course", available: true },
 ];
 
@@ -290,6 +293,18 @@ const CASES = {
       { title: "Golf Shop Merch COS & Payroll Economics", text: "Golf Shop Merchandise revenue beat forecast by 6.8% ($26,711 vs. $25,000), but Merch COS ran 58.2% ($15,547) vs. a forecasted 56.0% ($14,000), compressing gross margin to 41.8%. Meanwhile, Golf Shop Payroll hit $24,350 — 5.9% over the $23,000 forecast. With gross profit of only $11,164 on $26,711 in sales, Golf Shop Payroll alone exceeds merchandise gross profit by $13,186. Is the pro shop operating as a viable profit center, or is it functioning as an amenity that should be right-sized to minimize losses?" },
       { title: "Payroll Discipline in a Down-Revenue Month", text: "Total Revenue missed forecast by 5.8% ($22,579), yet Total Payroll ran $100,231 — 1.5% ($1,511) over the $98,720 forecast. The Cart Department is the worst offender: cart revenue fell 5.2% below plan ($132,716 vs. $140,000) while Cart Payroll surged 14.8% over forecast ($6,999 vs. $6,095). Only Golf Course Maintenance reduced payroll vs. plan (-3.0%). In a month where revenue underperformed, should every department have been expected to flex payroll below forecast, or were some overages justified by operational necessity?" },
       { title: "Cash Flow Breakeven Analysis", text: "Net Cash Flow after non-controllable expenses is $121,630 (33.0% of revenue). Non-controllable expenses total $30,516. If NOI before fees is $163,817, what is the realistic cash flow breakeven point for this club — i.e., what minimum monthly revenue level is needed to cover all fixed costs (non-controllable + management fee = ~$42,187) and still generate positive free cash flow to fund capital reserves and debt service?" }
+    ]
+  },
+  private1: {
+    title: "Private Club — 'Flow' Case",
+    subtitle: "July 2025 MOS · 36-Hole Private Club in the South",
+    context: "This is the July 2025 MOS for a Private Club in the South with 36 holes of golf. This is a growing Club getting closer to Full with a Wait List in the Golf category. They had an exceptional revenue month — but how did they do getting their new revenues to the bottom line? What could they have produced (flowed) if all areas were managed well? Dig into the performance and answer the questions below.",
+    questions: [
+      { title: "Dues Revenue Flowthrough", text: "Full Golf Members have grown from 657 (2023) to 686 (2024) to 742 this month against a budget of 722 — the club is approaching its Wait List. That membership growth drove roughly $57,000 in incremental Dues revenue year over year. Review the P&L. How much of that $57K in incremental dues actually reached the bottom line? Where did the rest go — which departments absorbed it and why? What should the Regional Manager and GM be holding their department heads accountable for, and what's the right benchmark for how much incremental dues revenue should flow to Controllable GOP?" },
+      { title: "F&B Revenue Mix & Profitability", text: "Total F&B Revenue came in at $245,547 for the month. F&B Net landed at $2,957. Review F&B Payroll, Cost of Sales, and the revenue mix across Banquet and Member Dining — including the prior-year trends. What's really going on in this department? What should the GM and F&B Director have managed differently from pre-month planning through execution, and what should F&B Net have looked like if they'd stuck to the plan?" },
+      { title: "Golf Operations Revenue Conversion", text: "Total Golf Revenues came in at $172,137 — review the mix across green fees, tournaments, merchandise, and cart fees, including prior-year comparisons. Golf Department Net landed at $38,225 against a $43,009 budget. The department beat revenue but missed net. What's driving that disconnect? Where did the Head Professional, Superintendent, and GM make good decisions, where did they miss, and what should Golf Department Net have been with tighter management?" },
+      { title: "Expense Management & One-Time Items", text: "Total Operating Expenses came in at $288,790 against a $315,871 budget. Review the department-level detail, including Golf Course Maintenance — which includes a $10,500 Toro fairway mower engine replacement — and G&A. Are these savings real, or is the favorable expense picture masking how the month was actually managed? Should any items have been handled differently from an accounting standpoint? Then tie it back to Q1 — if the controllable misses across the P&L had been managed properly, what should GOP have been, and what percentage of the $57K in incremental dues would have reached the bottom line?" },
+      { title: "Payroll Efficiency & Cross-Department Patterns", text: "Total Payroll came in at $448,250 against a $431,880 budget. Total Revenue beat plan by roughly $31,000. Review payroll by department, including the forecast, prior-year percentages, and the mix of where labor ran over and under. What does this tell you about how labor was planned and managed across the club? What should the Regional Manager be requiring of the GM and department heads around labor scheduling, and how would you benchmark whether this club is staffed appropriately for July volume in the South?" }
     ]
   },
   private2: {
@@ -1586,24 +1601,6 @@ function WorkshopTab({dm, admin}) {
         <h2 style={{fontFamily:"var(--ff)",fontSize:24,color:"var(--gold)",fontWeight:700,marginBottom:4}}>{cs.title}</h2>
         <div style={{fontSize:14,color:"var(--goldDim)",letterSpacing:2,textTransform:"uppercase",marginBottom:12}}>{cs.subtitle}</div>
         <p style={{fontSize:16,color:"var(--txt)",lineHeight:1.6}}>{cs.context}</p>
-      </div>
-
-      {/* Key stats table */}
-      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)"}}>
-        <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>📊 Key Performance Data — March 2026</div>
-        <div style={{background:"var(--input)",borderRadius:10,overflow:"hidden",border:"1px solid var(--border)"}}>
-          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:0,background:"var(--card)",padding:"10px 14px",fontSize:12,fontWeight:600,color:"var(--goldDim)",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid var(--border)"}}>
-            <div>Metric</div><div style={{textAlign:"right"}}>Actual</div><div style={{textAlign:"right"}}>Budget/Fcst</div><div style={{textAlign:"right"}}>Variance</div>
-          </div>
-          {cs.keyStats.map((s,i) => (
-            <div key={i} style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:0,padding:"8px 14px",fontSize:14,borderBottom:i<cs.keyStats.length-1?"1px solid var(--border)":"none"}}>
-              <div style={{color:"var(--txt)",fontWeight:s.label.startsWith("  ")?400:500}}>{s.label}</div>
-              <div style={{textAlign:"right",color:"var(--txt)",fontVariantNumeric:"tabular-nums"}}>{s.actual}</div>
-              <div style={{textAlign:"right",color:"var(--dim)",fontVariantNumeric:"tabular-nums"}}>{s.budget}</div>
-              <div style={{textAlign:"right",fontWeight:600,fontVariantNumeric:"tabular-nums",color:s.delta.startsWith("+")&&!s.delta.includes("✓")?"var(--gold)":s.delta.startsWith("-")&&!s.delta.includes("✓")?"var(--red)":"var(--goldDim)"}}>{s.delta}</div>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Questions + answers */}
