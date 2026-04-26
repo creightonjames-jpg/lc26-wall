@@ -532,7 +532,7 @@ function AgendaTab({dm}) {
         <div style={{fontSize:18,color:"var(--dim)"}}>📍 {dd.loc} · 🎯 {dd.title}</div>
       </div>
 
-      <div style={{maxHeight:dm?"calc(100vh - 360px)":340,overflowY:"auto",padding:"4px 12px 12px"}}>
+      <div style={{maxHeight:dm?"calc(100vh - 360px)":"none",overflowY:"auto",padding:"4px 12px 12px"}}>
         {dd.ev.map((ev, i) => {
           const s=pt(dd.date,ev.t), e=pt(dd.date,ev.e);
           const isA=now>=s&&now<e, isP=now>=e;
@@ -564,7 +564,7 @@ function AgendaTab({dm}) {
       </div>
         </>
       ) : (
-        <div style={{maxHeight:dm?"calc(100vh - 280px)":420,overflowY:"auto",padding:"16px 20px"}}>
+        <div style={{maxHeight:dm?"calc(100vh - 280px)":"none",overflowY:"auto",padding:"16px 20px"}}>
           {/* Conference Venues */}
           <div style={{marginBottom:24}}>
             <div style={{fontSize:14,color:"var(--goldDim)",fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,marginBottom:10}}>📍 Conference Venues</div>
@@ -669,7 +669,7 @@ function QTab({dm}) {
         <button className={`pill ${sort==="votes"?"active":""}`} onClick={()=>setSort("votes")}>Top</button>
         <button className={`pill ${sort==="recent"?"active":""}`} onClick={()=>setSort("recent")}>New</button>
       </div>
-      <div style={{maxHeight:dm?"calc(100vh - 260px)":360,overflowY:"auto"}}>
+      <div style={{maxHeight:dm?"calc(100vh - 260px)":"none",overflowY:"auto"}}>
         {sorted.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No questions yet — be the first!</p>}
         {sorted.map(it => {
           const v = hasVoted(it._key);
@@ -723,7 +723,7 @@ function CTab({dm}) {
           </div>
         </div>
       )}
-      <div style={{maxHeight:dm?"calc(100vh - 200px)":380,overflowY:"auto"}}>
+      <div style={{maxHeight:dm?"calc(100vh - 200px)":"none",overflowY:"auto"}}>
         {items.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No shoutouts yet!</p>}
         {items.map(it => (
           <div key={it._key} className="card-hover" style={{padding:"14px 20px",borderBottom:"1px solid var(--border)"}}>
@@ -809,7 +809,7 @@ function PTab({dm, admin}) {
           </div>
         </div>
       )}
-      <div style={{display:"grid",gridTemplateColumns:dm?"repeat(auto-fill,minmax(220px,1fr))":"repeat(auto-fill,minmax(130px,1fr))",gap:8,padding:12,maxHeight:dm?"calc(100vh - 240px)":360,overflowY:"auto"}}>
+      <div style={{display:"grid",gridTemplateColumns:dm?"repeat(auto-fill,minmax(220px,1fr))":"repeat(auto-fill,minmax(130px,1fr))",gap:8,padding:12,maxHeight:dm?"calc(100vh - 240px)":"none",overflowY:"auto"}}>
         {photos.length===0 && <p style={{gridColumn:"1/-1",textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No photos yet!</p>}
         {photos.map(p => {
           const isLiked = !!liked[p._key];
@@ -901,7 +901,7 @@ function PoTab({dm, admin}) {
   const act = polls.filter(p=>p.on), cls = polls.filter(p=>!p.on);
 
   return (
-    <div style={{maxHeight:dm?"calc(100vh - 200px)":440,overflowY:"auto"}}>
+    <div style={{maxHeight:dm?"calc(100vh - 200px)":"none",overflowY:"auto"}}>
       {admin && (
         <div style={{padding:20,borderBottom:"1px solid var(--border)",background:"var(--card)"}}>
           <div style={{fontSize:17,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>Create Poll (Admin)</div>
@@ -986,7 +986,7 @@ function TkTab({dm}) {
           </div>
         </div>
       )}
-      <div style={{maxHeight:dm?"calc(100vh - 260px)":340,overflowY:"auto"}}>
+      <div style={{maxHeight:dm?"calc(100vh - 260px)":"none",overflowY:"auto"}}>
         {filtered.length===0 && <p style={{textAlign:"center",padding:28,color:"var(--mute)",fontStyle:"italic"}}>No takeaways yet</p>}
         {[...filtered].sort((a,b) => b.ts-a.ts).map(it => (
           <div key={it._key} style={{padding:"16px 20px",borderBottom:"1px solid var(--border)"}}>
@@ -1024,7 +1024,7 @@ function ExportTab({dm}) {
   rxSum.sort((a,b) => b.total - a.total);
 
   return (
-    <div style={{padding:20,maxHeight:dm?"calc(100vh - 180px)":500,overflowY:"auto"}}>
+    <div style={{padding:20,maxHeight:dm?"calc(100vh - 180px)":"none",overflowY:"auto"}}>
       <h2 style={{fontFamily:"var(--ff)",fontSize:28,color:"var(--gold)",fontWeight:800,margin:"0 0 16px"}}>📊 LC26 Summary</h2>
       <div style={{marginBottom:20}}><div style={hs}>Overview</div><div style={ts}>{q.length} questions · {c.length} shoutouts · {ph.length} photos · {po.length} polls · {tk.length} takeaways</div></div>
       <div style={{marginBottom:20}}><div style={hs}>Top Questions</div>
