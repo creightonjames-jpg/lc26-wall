@@ -1004,6 +1004,146 @@ function TkTab({dm}) {
 }
 
 // ─── EXPORT ───
+// ─── PGA EDUCATION CREDIT TAB ───
+function PGATab({dm, admin}) {
+  const raw = useFirebase("pga_credits");
+  const submissions = toArr(raw).sort((a,b) => b.ts - a.ts);
+
+  const [name, setName] = useState("");
+  const [pgaNum, setPgaNum] = useState("");
+  const [justSubmitted, setJustSubmitted] = useState(false);
+
+  const submit = () => {
+    if (!name.trim() || !pgaNum.trim()) return;
+    fbPush("pga_credits", {
+      name: name.trim(),
+      pgaNumber: pgaNum.trim(),
+      ts: Date.now(),
+    });
+    setName("");
+    setPgaNum("");
+    setJustSubmitted(true);
+    setTimeout(() => setJustSubmitted(false), 4000);
+  };
+
+  const adminDelete = (key) => {
+    if (window.confirm("Delete this submission?")) {
+      fbRemove(`pga_credits/${key}`);
+    }
+  };
+
+  const exportCSV = () => {
+    const header = ["Name","PGA Membership Number","Submitted At"];
+    const rows = submissions.map(s => [
+      `"${(s.name||"").replace(/"/g,'""')}"`,
+      `"${(s.pgaNumber||"").replace(/"/g,'""')}"`,
+      `"${new Date(s.ts).toLocaleString()}"`
+    ].join(","));
+    const csv = [header.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `lc26-pga-education-credits-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div>
+      {/* Header / intro */}
+      <div style={{padding:"20px",borderBottom:"1px solid var(--border)",textAlign:"center"}}>
+        <div style={{fontSize:34,marginBottom:6}}>⛳</div>
+        <h2 style={{fontFamily:"var(--ff)",fontSize:dm?28:22,color:"var(--gold)",fontWeight:700,marginBottom:6}}>PGA Education Credit</h2>
+        <p style={{fontSize:14,color:"var(--dim)",lineHeight:1.5,maxWidth:520,margin:"0 auto"}}>
+          PGA Members — submit your name and PGA Membership Number below to receive education credit for the LC26 Leadership Conference.
+        </p>
+      </div>
+
+      {/* Submission form */}
+      {!dm && (
+        <div style={{padding:"20px",borderBottom:"1px solid var(--border)",maxWidth:520,margin:"0 auto"}}>
+          <div style={{fontSize:13,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Your Information</div>
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Full Name"
+            className="field"
+            style={{marginBottom:10}}
+          />
+          <input
+            value={pgaNum}
+            onChange={e => setPgaNum(e.target.value)}
+            placeholder="PGA Membership Number"
+            className="field"
+            style={{marginBottom:14}}
+            onKeyDown={e => { if (e.key === "Enter" && name.trim() && pgaNum.trim()) submit(); }}
+          />
+          <button
+            onClick={submit}
+            disabled={!name.trim() || !pgaNum.trim()}
+            className="btn-gold"
+            style={{width:"100%",fontSize:16,padding:"14px 28px",opacity:(!name.trim()||!pgaNum.trim())?0.5:1}}
+          >
+            ⛳ Submit for PGA Credit
+          </button>
+          {justSubmitted && (
+            <div style={{marginTop:14,padding:"12px 16px",background:"var(--glow)",border:"1px solid var(--gold)",borderRadius:10,color:"var(--gold)",fontSize:14,textAlign:"center",animation:"fadeIn .3s"}}>
+              ✓ Submission received — thank you!
+            </div>
+          )}
+          <p style={{fontSize:12,color:"var(--mute)",marginTop:12,textAlign:"center",fontStyle:"italic"}}>
+            You can submit multiple times if you need to update your information.
+          </p>
+        </div>
+      )}
+
+      {/* Admin view */}
+      {admin && (
+        <div style={{padding:"20px"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,flexWrap:"wrap",gap:8}}>
+            <div>
+              <div style={{fontSize:13,color:"var(--goldDim)",fontWeight:600,textTransform:"uppercase",letterSpacing:1}}>Admin — All Submissions</div>
+              <div style={{fontSize:14,color:"var(--dim)",marginTop:2}}>{submissions.length} {submissions.length===1?"submission":"submissions"}</div>
+            </div>
+            {submissions.length > 0 && (
+              <button onClick={exportCSV} className="btn-gold" style={{fontSize:14,padding:"10px 18px"}}>
+                📊 Export CSV
+              </button>
+            )}
+          </div>
+
+          {submissions.length === 0 ? (
+            <div style={{padding:"24px",textAlign:"center",color:"var(--mute)",fontStyle:"italic",background:"var(--card)",borderRadius:12,border:"1px solid var(--border)"}}>
+              No submissions yet
+            </div>
+          ) : (
+            <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,overflow:"hidden"}}>
+              <div style={{display:"grid",gridTemplateColumns:"1.5fr 1fr 1fr 36px",gap:0,padding:"12px 14px",background:"var(--input)",fontSize:12,fontWeight:600,color:"var(--goldDim)",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid var(--border)"}}>
+                <div>Name</div>
+                <div>PGA Number</div>
+                <div style={{textAlign:"right"}}>Submitted</div>
+                <div></div>
+              </div>
+              {submissions.map((s, i) => (
+                <div key={s._key} style={{display:"grid",gridTemplateColumns:"1.5fr 1fr 1fr 36px",gap:0,padding:"10px 14px",fontSize:14,alignItems:"center",borderBottom:i<submissions.length-1?"1px solid var(--border)":"none"}}>
+                  <div style={{color:"var(--txt)",fontWeight:500}}>{s.name}</div>
+                  <div style={{color:"var(--gold)",fontVariantNumeric:"tabular-nums"}}>{s.pgaNumber}</div>
+                  <div style={{textAlign:"right",color:"var(--dim)",fontSize:12}}>{new Date(s.ts).toLocaleString()}</div>
+                  <button onClick={() => adminDelete(s._key)} style={{background:"none",border:"none",color:"var(--red)",cursor:"pointer",fontSize:14,padding:2,justifySelf:"end"}} title="Delete">🗑</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── EXPORT / SUMMARY TAB (admin) ───
 function ExportTab({dm}) {
   const q = toArr(useFirebase("questions"));
   const c = toArr(useFirebase("comments"));
@@ -1083,6 +1223,7 @@ function AdminModal({onClose}) {
       fbRemove("takeaways");
       fbRemove("announcements");
       fbRemove("workshop_responses");
+      fbRemove("pga_credits");
       // Clear localStorage voting history too
       try {
         localStorage.removeItem("lc26_voted");
@@ -1170,6 +1311,7 @@ function AdminModal({onClose}) {
             {path:"reactions",label:"Reactions"},
             {path:"takeaways",label:"Takeaways"},
             {path:"workshop_responses",label:"Workshop"},
+            {path:"pga_credits",label:"PGA Credits"},
             {path:"announcements",label:"Announcements"},
           ].map(s => (
             <button key={s.path} onClick={() => resetSection(s.path, s.label)} className="btn-sm" style={{color:"var(--red)",borderColor:"var(--red)",padding:"6px 12px",fontSize:13}}>
@@ -1732,6 +1874,7 @@ function App() {
     {id:"polls",label:"Polls",icon:"📊",count:cnt.po},
     {id:"takeaways",label:"Takeaways",icon:"💡",count:cnt.tk},
     {id:"workshop",label:"Workshop",icon:"🎓",count:0,adminOnly:!workshopVisible},
+    {id:"pga",label:"PGA Credit",icon:"⛳",count:0},
   ];
   // Hide workshop from non-admins when not visible
   const tabs = allTabs.filter(t => !t.adminOnly || admin);
@@ -1781,6 +1924,7 @@ function App() {
           {tab==="polls" && <PoTab dm={dm} admin={admin} />}
           {tab==="takeaways" && <TkTab dm={dm} />}
           {tab==="workshop" && <WorkshopTab dm={dm} admin={admin} />}
+          {tab==="pga" && <PGATab dm={dm} admin={admin} />}
         </>)}
       </div>
 
